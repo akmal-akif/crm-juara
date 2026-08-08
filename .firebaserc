@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "akmal-crm-2026-c8a29"
+  },
+  "targets": {
+    "akmal-crm-2026-c8a29": {
+      "hosting": {
+        "main": [
+          "juara-travel-crm"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
