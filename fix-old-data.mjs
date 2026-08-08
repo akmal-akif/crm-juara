@@ -8,6 +8,7 @@
 // ============================================================
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, updateDoc, doc } from "firebase/firestore";
+import { parseCRMDate } from "./public/domain/leads.mjs";
 
 const cfg = {
   apiKey: "AIzaSyDoeFDNz1bEFr1uAmPz4gtu8c71LvJDcok",
@@ -21,10 +22,10 @@ const cfg = {
 // true = PREVIEW sahaja (tak simpan). false = simpan betul.
 const DRY_RUN = true;
 
-// true = TULIS SEMULA closedAt untuk SEMUA lead Closed = tarikh masuk.
-//        (Guna ini sebab skrip lama tersilap cap closedAt guna updatedAt.)
-// false = hanya isi yang belum ada closedAt.
-const FORCE = true;
+// Skrip ini hanya BACKFILL: ia tak pernah tulis-ganti closedAt yang sudah
+// wujud, walaupun DRY_RUN=false. FORCE-overwrite (guna tarikh masuk untuk
+// SEMUA lead Closed) sudah dibuang sebab ia boleh musnahkan closedAt sebenar
+// kalau skrip ini dijalankan semula secara tidak sengaja.
 
 const app = initializeApp(cfg);
 const db = getFirestore(app);
@@ -39,17 +40,17 @@ async function run() {
 
   for (const l of leads) {
     if (l.status !== "Closed") { notClosed++; continue; }
-    if (!FORCE && l.closedAt) { skipped++; continue; }   // mod biasa: jangan sentuh yang sudah ada
+    if (l.closedAt) { skipped++; continue; }   // sudah ada closedAt sebenar — jangan sentuh
 
     const entry = l.date || l.createdAt;                // tarikh MASUK
     if (!entry) { console.log(`  ⚠ SKIP (tiada tarikh masuk): ${l.name || l.id}`); continue; }
 
-    const d = new Date(entry);
+    const d = parseCRMDate(entry);
     const bulan = `${BULAN[d.getMonth()]} ${d.getFullYear()}`;
     perBulan[bulan] = (perBulan[bulan] || 0) + (parseFloat(l.value) || 0);
 
     console.log(`  ${DRY_RUN ? "[PREVIEW]" : "SET"} ${(l.name||"(tanpa nama)").padEnd(28)} -> ${bulan}  (RM ${(parseFloat(l.value)||0).toLocaleString()})`);
-    if (!DRY_RUN) await updateDoc(doc(db, "juara_leads", l.id), { closedAt: new Date(entry).toISOString() });
+    if (!DRY_RUN) await updateDoc(doc(db, "juara_leads", l.id), { closedAt: d.toISOString() });
     touched++;
   }
 

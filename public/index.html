@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
+<script type="module">
+  import { closedDate, parseCRMDate } from './domain/leads.mjs';
+  window.closedDate = closedDate;
+  window.parseCRMDate = parseCRMDate;
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Juara Travel — Sistem CRM Umrah v10</title>
@@ -1579,17 +1584,7 @@ const isMgr = () => CU && (CU.role === 'admin' || CU.role === 'superadmin');
 /* ══════════════════ Kiraan ══════════════════ */
 function nowMY(){ return new Date(Date.now() + 8*3600000); }
 function curMo(){ const d = nowMY(); return { mo:d.getUTCMonth(), yr:d.getUTCFullYear() }; }
-function parseCRMDate(raw){
-  if (!raw) return new Date(0);
-  if (raw && typeof raw.toDate === 'function') return raw.toDate();
-  if (raw && raw.seconds) return new Date(raw.seconds * 1000);
-  if (raw instanceof Date) return raw;
-  const s = String(raw).trim();
-  if (/^\d{4}-\d{2}-\d{2}$/.test(s)){ const p=s.split('-').map(Number); return new Date(p[0],p[1]-1,p[2]); }
-  const d = new Date(raw); return isNaN(d.getTime()) ? new Date(0) : d;
-}
 function leadDate(l){ return parseCRMDate(l.createdAt || l.date || l.updatedAt); }
-function closedDate(l){ return parseCRMDate(l.closedAt || l.updatedAt || l.date || l.createdAt); }
 function inMonth(d, mo, yr){ return d.getMonth() === mo && d.getFullYear() === yr; }
 function visLeads(){ return (CU && CU.role === 'agent') ? allLeads.filter(l => l.agent === CU.name) : allLeads; }
 function leadsMonth(mo, yr){ return visLeads().filter(l => inMonth(leadDate(l), mo, yr)); }

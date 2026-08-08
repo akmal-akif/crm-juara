@@ -4,6 +4,7 @@
 // ============================================================
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { closedDate } from "./public/domain/leads.mjs";
 
 const cfg = {
   apiKey: "AIzaSyDoeFDNz1bEFr1uAmPz4gtu8c71LvJDcok",
@@ -41,8 +42,8 @@ async function run() {
     else flags.push(`TIADA tarikh masuk: ${l.name || l.id}`);
 
     if (l.status === "Closed") {
-      const closeRaw = l.closedAt || l.updatedAt || l.date || l.createdAt;
-      const kClose = key(closeRaw);
+      const closed = closedDate(l);
+      const kClose = closed.getTime() ? key(closed) : null;
       const val = parseFloat(l.value) || 0;
       const pax = parseInt(l.pax) || 1;
 

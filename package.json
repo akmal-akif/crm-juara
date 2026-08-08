@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "test": "node --test public/domain/*.test.mjs"
+  },
   "dependencies": {
     "firebase": "^12.15.0"
   }
