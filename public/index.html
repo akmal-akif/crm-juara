@@ -186,7 +186,7 @@ body.rail .s-chev{transform:rotate(180deg)}
 /* Papan pendahulu / zon / aktiviti */
 .lb-row{display:flex;align-items:center;gap:14px;padding:11px 12px;border-radius:12px}
 .lb-rank{width:30px;font-size:17px;font-weight:800;text-align:center}
-.lb-name{font-size:16.5px;font-weight:700;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-name{font-size:16.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lb-br{font-size:14px;color:#79869e;margin-top:2px}
 .lb-sales{font-size:16.5px;font-weight:800}
 .lb-cl{font-size:13.5px;color:#79869e;margin-top:2px}
@@ -241,7 +241,8 @@ table.tbl{width:100%;border-collapse:collapse}
 .mdot{width:4px;height:4px;border-radius:50%;background:#c3cbdb;flex:none}
 .ld-pk{font-size:16.5px;font-weight:600}
 .ld-pks{font-size:15px;color:#68758f;margin-top:3px}
-.ld-ag{font-size:16px;font-weight:600;text-transform:uppercase}
+.ld-ag{font-size:16px;font-weight:600}
+.agn-name{font-size:17px;font-weight:700;letter-spacing:.2px}
 .ld-val{font-size:17.5px;font-weight:800;white-space:nowrap}
 .ld-upd{font-size:15.5px;color:#68758f;white-space:nowrap}
 .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:22px;font-size:15px;font-weight:700}
@@ -289,11 +290,6 @@ select.pipe-agent-sel{width:auto;min-width:220px;max-width:280px}
 .col-more:hover{background:#eef4ff}
 
 /* ── Prestasi Pasukan ── */
-.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px;max-width:1560px}
-.tm-name{font-size:18.5px;font-weight:800;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tm-sub{font-size:15px;color:#68758f;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tm-badge{font-size:15px;font-weight:700;padding:6px 12px;border-radius:20px;white-space:nowrap}
-.tm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}
 .tm-box{background:#f7f9fd;border-radius:12px;padding:13px 10px;text-align:center}
 .tm-v{font-size:23px;font-weight:800;letter-spacing:-.6px}
 .tm-l{font-size:13.5px;color:#79869e;margin-top:3px}
@@ -317,7 +313,7 @@ select.pipe-agent-sel{width:auto;min-width:220px;max-width:280px}
 .js-meta{font-size:15px;color:#68758f;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .js-pk{font-size:16.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .js-dep{display:flex;align-items:center;gap:8px;font-size:15px;color:#68758f;margin-top:3px;white-space:nowrap}
-.js-cd{font-size:14.5px;font-weight:600;text-transform:uppercase;white-space:nowrap}
+.js-cd{font-size:14.5px;font-weight:600;white-space:nowrap}
 .dpill{display:inline-block;font-size:15px;font-weight:700;padding:7px 12px;border-radius:20px;white-space:nowrap}
 .pay-row{display:flex;justify-content:space-between;font-size:14.5px;margin-bottom:6px}
 .pay-paid{font-weight:700}
@@ -379,6 +375,11 @@ select.pipe-agent-sel{width:auto;min-width:220px;max-width:280px}
 .sr-sh{font-size:13.5px;color:#79869e}
 .mini-bar{height:11px;border-radius:7px;background:#eef1f8;overflow:hidden}
 .mini-bar>div{height:100%;border-radius:7px;transition:width .4s ease}
+.lp-chart{display:flex;align-items:flex-end;gap:14px;height:190px;padding:22px 24px 4px}
+.lp-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.lp-bar-val{font-size:12px;font-weight:700;color:#3c4a66;margin-bottom:6px;white-space:nowrap}
+.lp-bar-fill{width:100%;max-width:44px;border-radius:8px 8px 3px 3px;transition:height .35s ease}
+.lp-bar-lb{font-size:12.5px;margin-top:9px;white-space:nowrap}
 
 /* ── Agent ── */
 .ag-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
@@ -436,7 +437,7 @@ select.pipe-agent-sel{width:auto;min-width:220px;max-width:280px}
 /* ── Profil ── */
 .pf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px;max-width:1200px;align-items:start}
 .pf-av{width:96px;height:96px;margin:0 auto;border-radius:50%;background:#7c3aed;color:#fff;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:800}
-.pf-name{font-size:22px;font-weight:800;margin-top:16px;text-transform:uppercase}
+.pf-name{font-size:22px;font-weight:800;margin-top:16px}
 .pf-role{display:inline-block;font-size:14.5px;font-weight:700;background:#f0e9ff;color:#6d28d9;padding:6px 14px;border-radius:20px;margin-top:10px;text-transform:uppercase}
 .pf-row{display:flex;align-items:center;gap:12px;background:#f7f9fd;border-radius:12px;padding:13px 15px}
 .pf-row span{font-size:16px;color:#3c4a66;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -609,7 +610,7 @@ textarea.f-in{min-height:110px;resize:vertical;line-height:1.5}
   .tbl th{padding:12px 15px;font-size:11.5px}.tbl td{padding:12px 15px}.ld-name{font-size:14.5px}.ld-meta{font-size:12.5px}
   .ld-pk,.ld-ag{font-size:14px}.ld-pks,.ld-upd{font-size:12.5px}.ld-val{font-size:15px}
   .pill{font-size:12.5px;padding:6px 11px}.chip,.btn-o,.btn-b{font-size:13.5px;padding:10px 14px}
-  .fu-name{font-size:14.5px}.fu-meta,.fu-silent{font-size:13px}.tm-name{font-size:16px}
+  .fu-name{font-size:14.5px}.fu-meta,.fu-silent{font-size:13px}
   .pk-name{font-size:18px}.pk-desc{font-size:13.5px}.pk-price{font-size:23px}
 }
 .dash-filter{display:flex;flex-direction:column;align-items:flex-end;gap:8px;min-height:48px}
@@ -805,7 +806,7 @@ button,input,select,textarea{font-size:inherit}
   .kpi-row{margin-top:9px}.kpi-big{font-size:30px!important;letter-spacing:-1px}
   .kpi-big .j{font-size:18px!important}
   .kpi-sub{font-size:11.2px!important}.kpi-up{font-size:11px;padding:4px 7px;margin-bottom:2px}
-  .grid2,.grid3,.km-kpis,.tm-grid,.as-grid,.pk-grid,.st-grid{gap:14px!important}
+  .grid2,.grid3,.km-kpis,.as-grid,.pk-grid,.st-grid{gap:14px!important}
   .km-list{gap:9px!important}
   .dashboard-section-space{margin-top:14px!important}
   .dash-filter-clean{margin-bottom:14px!important;padding:13px 15px!important;border-radius:14px!important}
@@ -972,8 +973,7 @@ button,input,select,textarea{font-size:inherit}
   .fu-more{padding:12px!important;font-size:11.5px!important}
 
   /* Other page grids */
-  .km-kpis,.tm-grid,.as-grid,.pk-grid,.st-grid,.f-grid,.room-alloc-row{grid-template-columns:1fr!important;gap:10px!important}
-  .tm-name{font-size:13.5px!important}.tm-sub{font-size:10.5px!important}
+  .km-kpis,.as-grid,.pk-grid,.st-grid,.f-grid,.room-alloc-row{grid-template-columns:1fr!important;gap:10px!important}
   .pipe{gap:10px!important;padding-bottom:8px}.col{min-width:270px!important;width:270px!important}.col-tt{font-size:12px!important}.pc-name{font-size:11.5px!important}.pc-val2{font-size:11px!important}
   .pk-name{font-size:15px!important}.pk-desc{font-size:11px!important}.pk-price{font-size:19px!important}
   .ng-hd{padding:12px!important}.ng-body{padding:3px 12px 13px!important}.ng-chip{font-size:10.5px!important;padding:7px 10px!important}
@@ -1553,6 +1553,7 @@ function rebuildAgentList(){
   ALL_AGENTS = out;
 }
 function userByName(n){ return (allUsers||[]).filter(u => (u.name||'').trim() === n)[0] || null; }
+function titleCaseName(s){ return String(s||'').trim().toLowerCase().replace(/\b\p{L}/gu, c => c.toUpperCase()); }
 function displayNameOf(email){ const u = (allUsers||[]).find(x => (x.email||x._id||'').toLowerCase() === String(email||'').toLowerCase()); return (u && u.name) ? u.name : (email || '—'); }
 function agentPhone(n){ const u = userByName(n); if (u && u.phone) return u.phone; const a = (allAgents||[]).filter(x => x.name === n)[0]; return a ? (a.phone||'') : ''; }
 function avOf(n){ const i = ALL_AGENTS.indexOf(n); return AV[(i >= 0 ? i : 0) % AV.length]; }
@@ -1684,7 +1685,7 @@ function ckSiap(l){ return ckCount(l) === AS_CHECKLIST.length; }
 
 /* ══════════════════ Mesej WhatsApp ══════════════════ */
 function introMsg(l){
-  const nama = (l.name||'').trim(), agent = (l.agent || (CU && CU.name) || 'Juara Travel').trim();
+  const nama = (l.name||'').trim(), agent = titleCaseName(l.agent || (CU && CU.name) || 'Juara Travel');
   const pakej = (l.pakej||'').trim(), pax = leadPax(l), tarikh = (l.tarikh||'').trim();
   const adaTarikh = tarikh && !/belum/i.test(tarikh);
   let m = 'Assalamualaikum' + (nama ? ' ' + nama : '') + ' \uD83D\uDE4F\n\n';
@@ -1697,7 +1698,7 @@ function introMsg(l){
   return m;
 }
 function fuMsg(l){
-  const nama = (l.name||'').trim(), agent = (l.agent || (CU && CU.name) || 'Juara Travel').trim(), pakej = (l.pakej||'').trim();
+  const nama = (l.name||'').trim(), agent = titleCaseName(l.agent || (CU && CU.name) || 'Juara Travel'), pakej = (l.pakej||'').trim();
   let m = 'Assalamualaikum' + (nama ? ' ' + nama : '') + ' \uD83D\uDE4F\n\n';
   m += 'Saya ' + agent + ' dari Juara Travel. Nak share sikit testimoni jemaah untuk pakej ' + (pakej || 'Umrah') + ' ni, murah pun berbaloi sangat:\n';
   m += TESTIMONI_URL + '\n\n';
@@ -1886,7 +1887,7 @@ function followUpSection(limit){
       return `<div class="fu-row">
         ${avatar(l.name,avOf(l.agent),46)}
         <div style="flex:1 1 160px;min-width:140px"><div class="fu-name">${esc(l.name||'—')}</div><div class="fu-meta">${esc(l.phone||'—')} · ${esc(l.negeri||'—')} · ${esc(l.pakej||'—')}</div></div>
-        <div style="text-align:right;margin-right:6px"><div class="fu-days">${daysLabel}</div><div class="fu-st">${esc(l.status||'New')} · ${esc((l.agent||'—').toUpperCase())}</div></div>
+        <div style="text-align:right;margin-right:6px"><div class="fu-days">${daysLabel}</div><div class="fu-st">${esc(l.status||'New')} · ${esc(titleCaseName(l.agent)||'—')}</div></div>
         <div style="display:flex;gap:8px"><button class="fu-wa" onclick="openFollowupAction('${l._id}')">${I.waW}<span>WhatsApp</span></button><button class="ic42 ic-ed" style="border:1.5px solid #e0e6f2;background:#fff" title="Kemaskini" onclick="editLead('${l._id}')">${I.pencil('#4a5568')}</button></div>
       </div>`;
     }).join('');
@@ -1967,7 +1968,7 @@ function renderDash(){
     const donut=`<div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:18px"><div style="width:150px;height:150px;border-radius:50%;background:${fl.length?'conic-gradient('+seg+')':'#eef1f8'};display:flex;align-items:center;justify-content:center;flex:none"><div style="width:96px;height:96px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:26px;font-weight:800;letter-spacing:-.8px">${fl.length}</div><div style="font-size:13px;color:#79869e">lead</div></div></div><div style="flex:1;min-width:170px">${STATUSES.map(s=>`<div style="display:flex;align-items:center;gap:10px;padding:5px 0"><span style="width:11px;height:11px;border-radius:4px;background:${PILL[s].dot};flex:none"></span><span style="flex:1;font-size:15.5px;font-weight:600;color:#3c4a66">${s}</span><span style="font-size:15.5px;font-weight:800">${stC[s]}</span></div>`).join('')}</div></div>`;
 
     const lb=ALL_AGENTS.map(n=>{const st=agentDashStat(n,r);return {n:n,sales:st.sales,closed:st.closed};}).sort((a,b)=>b.sales-a.sales).slice(0,5);
-    const lbHTML=lb.map((x,i)=>`<div class="lb-row${i===0?' top':''}"><div class="lb-rank">${i+1}</div>${agentAvatar(x.n,avOf(x.n),38)}<div style="flex:1;min-width:0"><div class="lb-name">${esc(x.n)}</div><div class="lb-sub">${esc((userByName(x.n)||{}).cawangan||'—')}</div></div><div style="text-align:right"><div class="lb-val">${fmtK(x.sales)}</div><div class="lb-cl">${x.closed} close</div></div></div>`).join('')||'<div class="empty-s" style="padding:14px 0">Tiada jualan dalam tempoh ini.</div>';
+    const lbHTML=lb.map((x,i)=>`<div class="lb-row${i===0?' top':''}"><div class="lb-rank">${i+1}</div>${agentAvatar(x.n,avOf(x.n),38)}<div style="flex:1;min-width:0"><div class="lb-name">${esc(titleCaseName(x.n))}</div><div class="lb-sub">${esc((userByName(x.n)||{}).cawangan||'—')}</div></div><div style="text-align:right"><div class="lb-val">${fmtK(x.sales)}</div><div class="lb-cl">${x.closed} close</div></div></div>`).join('')||'<div class="empty-s" style="padding:14px 0">Tiada jualan dalam tempoh ini.</div>';
 
     const zon={}; ZON_NEGERI.forEach(z=>zon[z[0]]=0);
     salesDashRange(r).forEach(l=>{const z=NEG2ZON[l.negeri]||'Lain';zon[z]=(zon[z]||0)+leadVal(l);});
@@ -1980,7 +1981,7 @@ function renderDash(){
     allLeads.forEach(l=>(l.activityLog||[]).forEach(g=>{const d=parseCRMDate(g.t);if(dateInDashRange(d,r))acts.push({t:g.t,act:g.act,by:g.by,name:l.name});}));
     acts.sort((a,b)=>new Date(b.t)-new Date(a.t));
     const tagOf=a=>/dicipta|baru/i.test(a)?['NEW','#e8f0ff',C.blue]:(/Closed/i.test(a)?['RM','#e7f6ec',C.green]:(/Recycle|padam/i.test(a)?['DEL','#fdeaea',C.red]:(/WhatsApp|WA/i.test(a)?['WA','#e7f6ec',C.green]:['EDIT','#fdf0e0',C.amber])));
-    const acHTML=acts.slice(0,5).map(a=>{const t=tagOf(a.act);return `<div class="ac-row"><div class="ac-tag" style="background:${t[1]};color:${t[2]}">${t[0]}</div><div style="flex:1;min-width:0"><div class="ac-txt">${esc((a.by||'?').toUpperCase())} — ${esc(a.act)} (${esc((a.name||'').toUpperCase())})</div><div class="ac-time">${relTime(a.t)}</div></div></div>`;}).join('')||'<div class="empty-s" style="padding:14px 0">Tiada aktiviti dalam tempoh ini.</div>';
+    const acHTML=acts.slice(0,5).map(a=>{const t=tagOf(a.act);return `<div class="ac-row"><div class="ac-tag" style="background:${t[1]};color:${t[2]}">${t[0]}</div><div style="flex:1;min-width:0"><div class="ac-txt">${esc(titleCaseName(a.by)||'?')} — ${esc(a.act)} (${esc((a.name||'').toUpperCase())})</div><div class="ac-time">${relTime(a.t)}</div></div></div>`;}).join('')||'<div class="empty-s" style="padding:14px 0">Tiada aktiviti dalam tempoh ini.</div>';
 
     $('pg-dashboard').innerHTML=`<div class="wrap">${dashFilter}${kpis}
       <div class="card pad dashboard-section-space"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><div><div class="ct">Prestasi Sebenar vs Sasaran Bulanan</div><div class="cs">Data tempoh dipilih dibandingkan dengan sasaran bulanan tetap</div></div><div style="font-size:13px;color:#8a95ab;text-align:right">${esc(r.label)}</div></div>${tgHTML}</div>
@@ -2031,7 +2032,7 @@ function renderLeads(){
   const advPanel=`<div class="lead-adv-wrap">
     <button type="button" class="btn-o${advOn?' on':''}" onclick="toggleAdv(event)">${I.filter}Filter Lanjutan</button>
     <div class="adv${f.advOpen?' open':''}" onclick="event.stopPropagation()">
-      ${isAgent()?'':`<div class="adv-lb">Agent</div><select onchange="setAdv('agent',this.value)">${opt(ALL_AGENTS,adv.agent)}</select>`}
+      ${isAgent()?'':`<div class="adv-lb">Agent</div><select onchange="setAdv('agent',this.value)"><option value="">Semua</option>${ALL_AGENTS.map(n=>`<option value="${esc(n)}"${n===adv.agent?' selected':''}>${esc(titleCaseName(n))}</option>`).join('')}</select>`}
       <div class="adv-lb">Pakej</div><select onchange="setAdv('pakej',this.value)">${opt(allPkgs.map(p=>p.name),adv.pakej)}</select>
       <div class="adv-lb">Negeri</div><select onchange="setAdv('negeri',this.value)">${opt(NEGERI_LIST,adv.negeri)}</select>
       <div class="adv-lb">Kempen</div><select onchange="setAdv('camp',this.value)">${opt(canonicalCampaigns().map(k=>k.name),adv.camp)}</select>
@@ -2052,7 +2053,7 @@ function renderLeads(){
         <div><button type="button" class="ld-name ld-name-link" title="Klik untuk kemaskini lead" onclick="editLead('${l._id}')">${esc(l.name||'—')}</button>
         <div class="ld-meta">${esc(l.phone||'—')}<span class="mdot"></span>${esc(l.negeri||'—')}</div></div></div></td>
       <td><div class="ld-pk">${esc(l.pakej||'—')}</div><div class="ld-pks">${leadPax(l)} pax · ${esc(tarikhLabel(l.tarikh))}</div></td>
-      <td><div style="display:flex;align-items:center;gap:11px">${agentAvatar(l.agent,avOf(l.agent),34)}<div class="ld-ag">${esc(l.agent||'—')}</div></div></td>
+      <td><div style="display:flex;align-items:center;gap:11px">${agentAvatar(l.agent,avOf(l.agent),34)}<div class="ld-ag">${esc(titleCaseName(l.agent)||'—')}</div></div></td>
       <td class="r"><div class="ld-val">${leadVal(l)?fmtRM(leadVal(l)):'—'}</div></td>
       <td>${pillHTML(l.status||'New')}</td>
       <td>${upd}</td>
@@ -2106,7 +2107,7 @@ function renderPipeline(){
     <div class="pipe-filter">
       <select class="f-in pipe-agent-sel" onchange="setPipeAgen(this.value)">
         <option value=""${!p.agent ? ' selected' : ''}>Semua agent (${base.length})</option>
-        ${ALL_AGENTS.map(n => `<option value="${esc(n)}"${p.agent === n ? ' selected' : ''}>${esc(n)}</option>`).join('')}
+        ${ALL_AGENTS.map(n => `<option value="${esc(n)}"${p.agent === n ? ' selected' : ''}>${esc(titleCaseName(n))}</option>`).join('')}
       </select>
     </div>`;
   const kols = STATUSES.map(s => {
@@ -2164,7 +2165,7 @@ function renderAfterSales(){
         <div><div class="js-name">${esc(l.name || '—')}</div>
         <div class="js-meta">${leadPax(l)} pax · ${esc(l.phone || '—')}</div></div></div></td>
       <td><div class="js-pk">${esc(l.pakej || '—')}</div>
-        <div class="js-dep">${esc(tarikhLabel(l.tarikh))}<span class="mdot"></span><span class="js-cd" style="color:#68758f">${esc(l.agent || '—')}</span></div></td>
+        <div class="js-dep">${esc(tarikhLabel(l.tarikh))}<span class="mdot"></span><span class="js-cd" style="color:#68758f">${esc(titleCaseName(l.agent) || '—')}</span></div></td>
       <td>${dpill2(!!c[2], 'Siap')}</td>
       <td>${dpill2(!!c[3], 'Proses')}</td>
       <td>${dpill2(!!c[4], 'Selesai')}</td>
@@ -2321,6 +2322,30 @@ function renderLaporan(){
   }).join('');
   const julat = enam.length ? enam[0].label.split(' ')[0] + ' – ' + enam[enam.length - 1].label : '';
 
+  const maxSales = Math.max.apply(null, enam.map(x => x.sales).concat([1]));
+  const chartCols = enam.map(x => {
+    const on = x === rec;
+    const h = Math.max(4, Math.round(x.sales / maxSales * 100));
+    return `<div class="lp-bar-col">
+      <div class="lp-bar-val">${x.sales ? fmtK(x.sales) : ''}</div>
+      <div class="lp-bar-fill" style="height:${h}%;background:${on ? C.blue : '#c7d5f0'}"></div>
+      <div class="lp-bar-lb" style="color:${on ? '#0f172a' : '#79869e'};font-weight:${on ? 800 : 600}">${x.label.split(' ')[0]}</div>
+    </div>`;
+  }).join('');
+
+  const agRows = ALL_AGENTS.map(n => {
+    const leadsN = fl.filter(l => l.agent === n).length;
+    const closedN = cl.filter(l => l.agent === n);
+    const salesN = closedN.reduce((s,l) => s + leadVal(l), 0);
+    const rate = leadsN ? Math.round(closedN.length / leadsN * 100) : 0;
+    return { n, leadsN, closed:closedN.length, salesN, rate };
+  }).filter(a => a.leadsN || a.closed).sort((a,b) => b.salesN - a.salesN);
+  const agTrs = agRows.map(a => `<tr>
+      <td><div style="display:flex;align-items:center;gap:11px">${agentAvatar(a.n,avOf(a.n),34)}<div class="ld-ag">${esc(titleCaseName(a.n))}</div></div></td>
+      <td class="r">${a.leadsN}</td><td class="r">${a.closed}</td>
+      <td class="r" style="font-weight:700;color:${a.rate >= 30 ? C.green : '#3c4a66'}">${a.rate}%</td>
+      <td class="r" style="font-weight:800">${fmtK(a.salesN)}</td></tr>`).join('');
+
   $('pg-laporan').innerHTML = `
   <div class="wrap18">
     <div class="lp-bar">
@@ -2348,10 +2373,18 @@ function renderLaporan(){
     </div>
     <div class="card">
       <div class="pad" style="padding-bottom:4px"><div class="ct">Perbandingan 6 Bulan</div><div class="cs">${esc(julat)}</div></div>
+      <div class="lp-chart">${chartCols}</div>
       ${enamF.length ? `<div class="tblwrap"><table class="tbl">
         <thead><tr><th>Bulan</th><th class="r">Leads</th><th class="r">Close</th><th class="r">Pax</th><th class="r">Jualan</th><th class="r">CPL</th><th class="r">ROAS</th></tr></thead>
         <tbody>${trs}</tbody></table></div>`
       : '<div class="empty"><div class="empty-t">Tiada bulan sepadan</div><div class="empty-s">Kosongkan carian untuk lihat semua bulan</div></div>'}
+    </div>
+    <div class="card" style="margin-top:18px">
+      <div class="pad" style="padding-bottom:4px"><div class="ct">Prestasi Agent Keseluruhan</div><div class="cs">${esc(MY_MONTHS[rec.mo])} ${rec.yr} · disusun ikut jualan tertinggi</div></div>
+      ${agRows.length ? `<div class="tblwrap"><table class="tbl">
+        <thead><tr><th>Agent</th><th class="r">Leads</th><th class="r">Close</th><th class="r">Kadar</th><th class="r">Jualan</th></tr></thead>
+        <tbody>${agTrs}</tbody></table></div>`
+      : '<div class="empty"><div class="empty-t">Tiada aktiviti agent bulan ini</div><div class="empty-s">Cuba pilih bulan lain</div></div>'}
     </div>
   </div>`;
 }
@@ -2375,7 +2408,7 @@ function renderAgent(){
     const held = allLeads.filter(l => l.agent === nm).length;
     return `<tr>
       <td><div style="display:flex;align-items:center;gap:13px">${agentAvatar(nm || u.email, avOf(nm), 42)}
-        <div><div class="ld-name">${esc(nm || '—')}</div><div class="ld-meta" style="color:#2563eb">${esc(u.email || '')}</div></div></div></td>
+        <div><div class="agn-name">${esc(titleCaseName(nm) || '—')}</div><div class="ld-meta" style="color:#2563eb">${esc(u.email || '')}</div></div></div></td>
       <td><span class="role-pill" style="background:${rp.bg};color:${rp.fg}">${ROLE_LB[u.role] || 'Agent'}</span></td>
       <td><div class="ag-br">${esc(u.cawangan || '—')}</div><div class="ag-zn">${esc(zonCawangan(u.cawangan || ''))}</div></td>
       <td class="r"><span class="ag-held">${held}</span></td>
@@ -2406,7 +2439,7 @@ function renderAgent(){
     return `<div class="ng-card">
       <div class="ng-hd" onclick="ngOpen('${esc(n)}')">
         ${agentAvatar(n, avOf(n), 38)}
-        <div style="flex:1;min-width:0"><div style="font-size:16.5px;font-weight:700;text-transform:uppercase">${esc(n)}</div>
+        <div style="flex:1;min-width:0"><div style="font-size:16.5px;font-weight:700">${esc(titleCaseName(n))}</div>
         <div style="font-size:14px;color:#79869e;margin-top:2px">${esc((userByName(n) || {}).cawangan || '—')}</div></div>
         ${sum}
         <span style="display:flex;transform:rotate(${open ? 180 : 0}deg);transition:transform .15s">${I.chev}</span>
@@ -2502,7 +2535,7 @@ function renderRecycle(){
         <div><div class="rc-name">${esc(r.name || '—')}</div>
         <div class="rc-meta">${esc(r.phone || '—')} · ${esc(r.negeri || '—')} · ${esc(r.pakej || '—')} ${leadPax(r)} pax</div></div>
       </div>
-      <div style="min-width:190px"><div class="rc-by">Dipadam oleh <b style="color:#3c4a66">${esc(displayNameOf(r.deletedBy).toUpperCase())}</b></div><div class="rc-reason">${esc(r.deletedReason || '')}</div></div>
+      <div style="min-width:190px"><div class="rc-by">Dipadam oleh <b style="color:#3c4a66">${esc(titleCaseName(displayNameOf(r.deletedBy)))}</b></div><div class="rc-reason">${esc(r.deletedReason || '')}</div></div>
       <div style="text-align:right;min-width:100px">${pillHTML(r.status)}<div class="rc-when">${relTime(r.deletedAt)}</div></div>
       ${isMgr() ? `<button class="rc-restore" onclick="restoreLead('${r._id}')">${I.undo}Pulihkan</button>` : ''}
       ${isSuper() ? `<button class="ic44 ic-rd" title="Padam kekal" onclick="purgeAsk('${r._id}')">${I.xR}</button>` : ''}
@@ -2548,7 +2581,7 @@ function renderProfil(){
         <button class="pf-photo-edit" title="Tukar gambar profil" onclick="pilihFotoProfil()">${I.pencilW}</button>
       </div>
       <div class="pf-photo-actions"><button class="pf-photo-link" onclick="pilihFotoProfil()">Tukar gambar</button>${u.photoURL ? '<button class="pf-photo-link danger" onclick="buangFotoProfil()">Buang gambar</button>' : ''}</div>
-      <div class="pf-name">${esc(CU.name)}</div>
+      <div class="pf-name">${esc(titleCaseName(CU.name))}</div>
       <div class="pf-role" style="background:${rp.bg};color:${rp.fg}">${ROLE_LB[u.role] || 'Agent'}</div>
       <div style="display:flex;flex-direction:column;gap:12px;margin-top:24px;text-align:left">
         <div class="pf-row">${I.mail}<span>${esc(CU.email)}</span></div>
@@ -2640,9 +2673,9 @@ function renderSettings(){
             </select>
             <div class="in-lb" style="margin-top:16px">Agent bergilir untuk pakej ini${boleh ? '' : ' · hanya Super Admin boleh ubah'}</div>
             <div style="display:flex;flex-wrap:wrap;gap:8px">
-              ${ALL_AGENTS.map(n => `<div class="as-chip${rota.includes(n) ? ' on' : ''}" onclick="toggleBorangAgent('${esc(n)}')"><span class="sq" style="background:${avOf(n)}"></span>${esc(n.toUpperCase())}</div>`).join('') || '<div class="st-s">Tiada agent aktif.</div>'}
+              ${ALL_AGENTS.map(n => `<div class="as-chip${rota.includes(n) ? ' on' : ''}" onclick="toggleBorangAgent('${esc(n)}')"><span class="sq" style="background:${avOf(n)}"></span>${esc(titleCaseName(n))}</div>`).join('') || '<div class="st-s">Tiada agent aktif.</div>'}
             </div>
-            <div class="st-s" style="margin-top:9px">${rota.length ? 'Bergilir ikut susunan: ' + esc(rota.join(' → ')) : 'Belum ada agent dipilih — lead dari borang pakej ini tidak akan diagihkan.'}</div>
+            <div class="st-s" style="margin-top:9px">${rota.length ? 'Bergilir ikut susunan: ' + esc(rota.map(titleCaseName).join(' → ')) : 'Belum ada agent dipilih — lead dari borang pakej ini tidak akan diagihkan.'}</div>
             <div class="in-lb" style="margin-top:18px">URL Apps Script (selepas anda deploy skrip di bawah)</div>
             <input class="in-box" id="bg-endpoint" style="font-size:14px;font-weight:600" value="${esc(formCfg.endpoint || '')}" placeholder="https://script.google.com/macros/s/xxxx/exec" ${boleh ? 'onchange="simpanBorangEndpoint()"' : 'disabled'}>
           </div>
@@ -3328,7 +3361,7 @@ function isiBorangLead(l){
   const agentEl = $('ml-agent');
   const agOpts = (isAgent()) ? [CU.name] : ALL_AGENTS;
   agentEl.innerHTML = ((isAgent()) ? '' : '<option value="__AUTO__">Auto ikut negeri</option>') +
-    agOpts.map(n => `<option value="${esc(n)}"${l && l.agent === n ? ' selected' : ''}>${esc(n)}</option>`).join('');
+    agOpts.map(n => `<option value="${esc(n)}"${l && l.agent === n ? ' selected' : ''}>${esc(titleCaseName(n))}</option>`).join('');
   if (!l && isAgent()) agentEl.value = CU.name;
   const c = curMo();
   const dl = $('dl-tarikh'); let dlh = '<option value="Belum pasti">';
@@ -3414,7 +3447,7 @@ function showLog(e, id){
   const log = (l.activityLog || []).slice().reverse();
   $('mg-list').innerHTML = log.map(g => `
     <div class="log-row"><div class="log-t">${relTime(g.t)}</div>
-      <div><div class="log-a">${esc(g.act)}</div><div class="log-by">oleh ${esc((g.by || '?').toUpperCase())}</div></div></div>`).join('')
+      <div><div class="log-a">${esc(g.act)}</div><div class="log-by">oleh ${esc(titleCaseName(g.by)||'?')}</div></div></div>`).join('')
     || '<div class="empty-s">Tiada log lagi untuk lead ini.</div>';
   om('m-log');
 }
@@ -4157,7 +4190,7 @@ else init();
 .agent-card-v14.rank-2 .num{background:#94a3b8;color:#fff}
 .agent-card-v14.rank-3 .num{background:#b45309;color:#fff}
 .agent-card-v14 .top{display:flex;align-items:flex-start;gap:12px;padding-right:54px}
-.agent-card-v14 .name{font-size:17px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agent-card-v14 .name{font-size:17px;font-weight:900;color:#0f172a;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .agent-card-v14 .sub{font-size:13.5px;color:#64748b;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .agent-card-v14 .tag{display:inline-flex;padding:6px 10px;border-radius:999px;background:#f8fafc;border:1px solid #e7ecf5;font-size:12px;font-weight:800;color:#475569;margin-top:10px}
 .agent-card-v14 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
