@@ -272,7 +272,7 @@ table.tbl{width:100%;border-collapse:collapse}
 .pipe-filter{margin-bottom:14px}
 select.pipe-agent-sel{width:auto;min-width:220px;max-width:280px}
 .pipe{display:flex;gap:10px;overflow-x:auto;padding-bottom:12px;align-items:flex-start}
-.col{width:228px;flex:none;background:#f7f9fd;border:1px solid #e4e9f4;border-radius:16px;padding:11px;transition:border-color .12s,background .12s}
+.col{width:204px;flex:none;background:#f7f9fd;border:1px solid #e4e9f4;border-radius:16px;padding:11px;transition:border-color .12s,background .12s}
 .col.over{border-color:#2563eb;background:#f0f6ff}
 .col-hd{display:flex;align-items:center;gap:8px;padding:0 3px 11px}
 .col-dot{width:11px;height:11px;border-radius:4px}
@@ -280,14 +280,11 @@ select.pipe-agent-sel{width:auto;min-width:220px;max-width:280px}
 .col-ct{font-size:13.5px;font-weight:700;background:#e6ebf6;color:#4a5568;padding:3px 10px;border-radius:20px}
 .col-total{font-size:15px;color:#68758f;padding:0 3px 11px}
 .col-cards{display:flex;flex-direction:column;gap:8px}
-.pcard{background:#fff;border:1px solid #e4e9f4;border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(15,23,42,.05);cursor:grab}
+.pcard{background:#fff;border:1px solid #e4e9f4;border-radius:10px;padding:11px 12px;box-shadow:0 1px 3px rgba(15,23,42,.05);cursor:grab}
 .pcard:active{cursor:grabbing}
 .pcard.drag{opacity:.4}
-.pc-name{font-size:17px;font-weight:700;text-transform:uppercase;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pc-state{font-size:15px;color:#68758f;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pc-ft{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #f0f3f9}
-.pc-pk{font-size:16.5px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pc-val{font-size:17.5px;font-weight:800;white-space:nowrap;flex:none}
+.pc-name{font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-val2{display:inline-block;margin-top:8px;font-size:15px;font-weight:800;color:#15803d;background:#e7f6ec;padding:4px 10px;border-radius:8px;white-space:nowrap}
 .col-more{margin-top:11px;padding:12px;text-align:center;font-size:15px;font-weight:700;color:#2563eb;cursor:pointer;border-radius:11px}
 .col-more:hover{background:#eef4ff}
 
@@ -977,7 +974,7 @@ button,input,select,textarea{font-size:inherit}
   /* Other page grids */
   .km-kpis,.tm-grid,.as-grid,.pk-grid,.st-grid,.f-grid,.room-alloc-row{grid-template-columns:1fr!important;gap:10px!important}
   .tm-name{font-size:13.5px!important}.tm-sub{font-size:10.5px!important}
-  .pipe{gap:10px!important;padding-bottom:8px}.col{min-width:270px!important;width:270px!important}.col-tt{font-size:12px!important}.pc-name{font-size:11.5px!important}.pc-state,.pc-pk{font-size:9.8px!important}.pc-val{font-size:11px!important}
+  .pipe{gap:10px!important;padding-bottom:8px}.col{min-width:270px!important;width:270px!important}.col-tt{font-size:12px!important}.pc-name{font-size:11.5px!important}.pc-val2{font-size:11px!important}
   .pk-name{font-size:15px!important}.pk-desc{font-size:11px!important}.pk-price{font-size:19px!important}
   .ng-hd{padding:12px!important}.ng-body{padding:3px 12px 13px!important}.ng-chip{font-size:10.5px!important;padding:7px 10px!important}
   .ck-row{padding:10px 11px!important;gap:9px!important}.ck-lb{font-size:11.5px!important}
@@ -1556,6 +1553,7 @@ function rebuildAgentList(){
   ALL_AGENTS = out;
 }
 function userByName(n){ return (allUsers||[]).filter(u => (u.name||'').trim() === n)[0] || null; }
+function displayNameOf(email){ const u = (allUsers||[]).find(x => (x.email||x._id||'').toLowerCase() === String(email||'').toLowerCase()); return (u && u.name) ? u.name : (email || '—'); }
 function agentPhone(n){ const u = userByName(n); if (u && u.phone) return u.phone; const a = (allAgents||[]).filter(x => x.name === n)[0]; return a ? (a.phone||'') : ''; }
 function avOf(n){ const i = ALL_AGENTS.indexOf(n); return AV[(i >= 0 ? i : 0) % AV.length]; }
 function avatar(name, color, size){ return '<div class="av av' + (size||42) + '" style="background:' + color + '">' + esc(initial(name)) + '</div>'; }
@@ -1888,7 +1886,7 @@ function followUpSection(limit){
       return `<div class="fu-row">
         ${avatar(l.name,avOf(l.agent),46)}
         <div style="flex:1 1 160px;min-width:140px"><div class="fu-name">${esc(l.name||'—')}</div><div class="fu-meta">${esc(l.phone||'—')} · ${esc(l.negeri||'—')} · ${esc(l.pakej||'—')}</div></div>
-        <div style="text-align:right;margin-right:6px"><div class="fu-days">${daysLabel}</div><div class="fu-st">${esc(l.status||'New')} · ${esc(l.agent||'—')}</div></div>
+        <div style="text-align:right;margin-right:6px"><div class="fu-days">${daysLabel}</div><div class="fu-st">${esc(l.status||'New')} · ${esc((l.agent||'—').toUpperCase())}</div></div>
         <div style="display:flex;gap:8px"><button class="fu-wa" onclick="openFollowupAction('${l._id}')">${I.waW}<span>WhatsApp</span></button><button class="ic42 ic-ed" style="border:1.5px solid #e0e6f2;background:#fff" title="Kemaskini" onclick="editLead('${l._id}')">${I.pencil('#4a5568')}</button></div>
       </div>`;
     }).join('');
@@ -1982,7 +1980,7 @@ function renderDash(){
     allLeads.forEach(l=>(l.activityLog||[]).forEach(g=>{const d=parseCRMDate(g.t);if(dateInDashRange(d,r))acts.push({t:g.t,act:g.act,by:g.by,name:l.name});}));
     acts.sort((a,b)=>new Date(b.t)-new Date(a.t));
     const tagOf=a=>/dicipta|baru/i.test(a)?['NEW','#e8f0ff',C.blue]:(/Closed/i.test(a)?['RM','#e7f6ec',C.green]:(/Recycle|padam/i.test(a)?['DEL','#fdeaea',C.red]:(/WhatsApp|WA/i.test(a)?['WA','#e7f6ec',C.green]:['EDIT','#fdf0e0',C.amber])));
-    const acHTML=acts.slice(0,5).map(a=>{const t=tagOf(a.act);return `<div class="ac-row"><div class="ac-tag" style="background:${t[1]};color:${t[2]}">${t[0]}</div><div style="flex:1;min-width:0"><div class="ac-txt">${esc(a.by||'?')} — ${esc(a.act)} (${esc((a.name||'').toUpperCase())})</div><div class="ac-time">${relTime(a.t)}</div></div></div>`;}).join('')||'<div class="empty-s" style="padding:14px 0">Tiada aktiviti dalam tempoh ini.</div>';
+    const acHTML=acts.slice(0,5).map(a=>{const t=tagOf(a.act);return `<div class="ac-row"><div class="ac-tag" style="background:${t[1]};color:${t[2]}">${t[0]}</div><div style="flex:1;min-width:0"><div class="ac-txt">${esc((a.by||'?').toUpperCase())} — ${esc(a.act)} (${esc((a.name||'').toUpperCase())})</div><div class="ac-time">${relTime(a.t)}</div></div></div>`;}).join('')||'<div class="empty-s" style="padding:14px 0">Tiada aktiviti dalam tempoh ini.</div>';
 
     $('pg-dashboard').innerHTML=`<div class="wrap">${dashFilter}${kpis}
       <div class="card pad dashboard-section-space"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><div><div class="ct">Prestasi Sebenar vs Sasaran Bulanan</div><div class="cs">Data tempoh dipilih dibandingkan dengan sasaran bulanan tetap</div></div><div style="font-size:13px;color:#8a95ab;text-align:right">${esc(r.label)}</div></div>${tgHTML}</div>
@@ -2118,10 +2116,9 @@ function renderPipeline(){
     const exp = p.expand[s];
     const show = exp ? ls : ls.slice(0, 8);
     const cards = show.map(l => `
-      <div class="pcard" draggable="true" ondragstart="dragStart(event,'${l._id}')" ondragend="dragEnd(event)" onclick="editLead('${l._id}')">
+      <div class="pcard" style="border-left:4px solid ${PILL[s].dot}" draggable="true" ondragstart="dragStart(event,'${l._id}')" ondragend="dragEnd(event)" onclick="editLead('${l._id}')">
         <div class="pc-name">${esc(l.name || '—')}</div>
-        <div class="pc-state">${esc(l.agent || '—')}</div>
-        <div class="pc-ft"><div class="pc-pk">${esc((l.pakej || '—').replace('Pakej ','')) }</div><div class="pc-val">${pipeEstVal(l) ? fmtRM(pipeEstVal(l)) : '—'}</div></div>
+        <div class="pc-val2">${pipeEstVal(l) ? fmtRM(pipeEstVal(l)) : '—'}</div>
       </div>`).join('');
     return `
     <div class="col" id="col-${s.replace(' ','_')}" ondragover="dragOver(event,'${s}')" ondragleave="dragLeave('${s}')" ondrop="dropCol(event,'${s}')">
@@ -2505,7 +2502,7 @@ function renderRecycle(){
         <div><div class="rc-name">${esc(r.name || '—')}</div>
         <div class="rc-meta">${esc(r.phone || '—')} · ${esc(r.negeri || '—')} · ${esc(r.pakej || '—')} ${leadPax(r)} pax</div></div>
       </div>
-      <div style="min-width:190px"><div class="rc-by">Dipadam oleh <b style="color:#3c4a66">${esc(r.deletedBy || '—')}</b></div><div class="rc-reason">${esc(r.deletedReason || '')}</div></div>
+      <div style="min-width:190px"><div class="rc-by">Dipadam oleh <b style="color:#3c4a66">${esc(displayNameOf(r.deletedBy).toUpperCase())}</b></div><div class="rc-reason">${esc(r.deletedReason || '')}</div></div>
       <div style="text-align:right;min-width:100px">${pillHTML(r.status)}<div class="rc-when">${relTime(r.deletedAt)}</div></div>
       ${isMgr() ? `<button class="rc-restore" onclick="restoreLead('${r._id}')">${I.undo}Pulihkan</button>` : ''}
       ${isSuper() ? `<button class="ic44 ic-rd" title="Padam kekal" onclick="purgeAsk('${r._id}')">${I.xR}</button>` : ''}
@@ -2643,7 +2640,7 @@ function renderSettings(){
             </select>
             <div class="in-lb" style="margin-top:16px">Agent bergilir untuk pakej ini${boleh ? '' : ' · hanya Super Admin boleh ubah'}</div>
             <div style="display:flex;flex-wrap:wrap;gap:8px">
-              ${ALL_AGENTS.map(n => `<div class="as-chip${rota.includes(n) ? ' on' : ''}" onclick="toggleBorangAgent('${esc(n)}')"><span class="sq" style="background:${avOf(n)}"></span>${esc(n)}</div>`).join('') || '<div class="st-s">Tiada agent aktif.</div>'}
+              ${ALL_AGENTS.map(n => `<div class="as-chip${rota.includes(n) ? ' on' : ''}" onclick="toggleBorangAgent('${esc(n)}')"><span class="sq" style="background:${avOf(n)}"></span>${esc(n.toUpperCase())}</div>`).join('') || '<div class="st-s">Tiada agent aktif.</div>'}
             </div>
             <div class="st-s" style="margin-top:9px">${rota.length ? 'Bergilir ikut susunan: ' + esc(rota.join(' → ')) : 'Belum ada agent dipilih — lead dari borang pakej ini tidak akan diagihkan.'}</div>
             <div class="in-lb" style="margin-top:18px">URL Apps Script (selepas anda deploy skrip di bawah)</div>
@@ -3417,7 +3414,7 @@ function showLog(e, id){
   const log = (l.activityLog || []).slice().reverse();
   $('mg-list').innerHTML = log.map(g => `
     <div class="log-row"><div class="log-t">${relTime(g.t)}</div>
-      <div><div class="log-a">${esc(g.act)}</div><div class="log-by">oleh ${esc(g.by || '?')}</div></div></div>`).join('')
+      <div><div class="log-a">${esc(g.act)}</div><div class="log-by">oleh ${esc((g.by || '?').toUpperCase())}</div></div></div>`).join('')
     || '<div class="empty-s">Tiada log lagi untuk lead ini.</div>';
   om('m-log');
 }
@@ -4160,7 +4157,7 @@ else init();
 .agent-card-v14.rank-2 .num{background:#94a3b8;color:#fff}
 .agent-card-v14.rank-3 .num{background:#b45309;color:#fff}
 .agent-card-v14 .top{display:flex;align-items:flex-start;gap:12px;padding-right:54px}
-.agent-card-v14 .name{font-size:17px;font-weight:900;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agent-card-v14 .name{font-size:17px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .agent-card-v14 .sub{font-size:13.5px;color:#64748b;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .agent-card-v14 .tag{display:inline-flex;padding:6px 10px;border-radius:999px;background:#f8fafc;border:1px solid #e7ecf5;font-size:12px;font-weight:800;color:#475569;margin-top:10px}
 .agent-card-v14 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
