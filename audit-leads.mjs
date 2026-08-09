@@ -4,7 +4,7 @@
 // ============================================================
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
-import { closedDate } from "./public/domain/leads.mjs";
+import { closedDate, parseCRMDate } from "./public/domain/leads.mjs";
 
 const cfg = {
   apiKey: "AIzaSyDoeFDNz1bEFr1uAmPz4gtu8c71LvJDcok",
@@ -20,8 +20,8 @@ const db = getFirestore(app);
 
 const BULAN = ["Jan","Feb","Mac","Apr","Mei","Jun","Jul","Ogos","Sep","Okt","Nov","Dis"];
 function key(raw) {
-  const d = new Date(raw);
-  if (isNaN(d.getTime())) return null;
+  const d = parseCRMDate(raw);
+  if (!d.getTime()) return null;
   return `${d.getFullYear()}-${String(d.getMonth()).padStart(2,"0")}`;
 }
 function label(k) { const [y,m] = k.split("-"); return `${BULAN[+m]} ${y}`; }
@@ -42,8 +42,7 @@ async function run() {
     else flags.push(`TIADA tarikh masuk: ${l.name || l.id}`);
 
     if (l.status === "Closed") {
-      const closed = closedDate(l);
-      const kClose = closed.getTime() ? key(closed) : null;
+      const kClose = key(closedDate(l));
       const val = parseFloat(l.value) || 0;
       const pax = parseInt(l.pax) || 1;
 

@@ -43,6 +43,7 @@ async function run() {
     if (!entry) { console.log(`  SKIP (tiada tarikh masuk): ${l.name || l.id}`); noDate++; continue; }
 
     const d = parseCRMDate(entry);
+    if (!d.getTime()) { console.log(`  SKIP (tarikh tidak sah: ${JSON.stringify(entry)}): ${l.name || l.id}`); noDate++; continue; }
     const iso = d.toISOString();
     const bulan = `${BULAN[d.getMonth()]} ${d.getFullYear()}`;
     perBulan[bulan] = (perBulan[bulan] || 0) + (parseFloat(l.value) || 0);

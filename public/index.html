@@ -2140,55 +2140,6 @@ function renderPipeline(){
   $('pg-pipeline').innerHTML = `<div class="wrap18">${agenSel}<div class="pipe">${kols}</div></div>`;
 }
 
-/* ══════════════════ Prestasi Pasukan ══════════════════ */
-function renderTeam(){
-  const c = curMo();
-  const zons = ['Zon Tengah','Zon Utara','Zon Selatan','Zon Timur','Zon Borneo'];
-  const zonF = S.team.zon;
-  let names = ALL_AGENTS.filter(n => {
-    const u = userByName(n);
-    return (!zonF || (u && zonCawangan(u.cawangan || '') === zonF)) &&
-      (!S.q || n.toLowerCase().indexOf(S.q.toLowerCase()) >= 0);
-  });
-  const perTgt = TARGET.sales / Math.max(1, ALL_AGENTS.length);
-  const cards = names.map(n => {
-    const st = agenStatBulan(n, c.mo, c.yr);
-    const u = userByName(n) || {};
-    const pc = pct(st.sales, perTgt);
-    const badge = pc >= 90 ? ['Terbaik','#fdf0e0',C.amberD] : (pc >= 75 ? ['Atas sasaran','#e7f6ec',C.greenD] : (pc >= 50 ? ['Sederhana','#e8f0ff',C.blueD] : ['Perlu bantuan','#fdf0e0',C.amberD]));
-    const bwarna = pc >= 75 ? C.green : (pc >= 50 ? C.blue : C.amber);
-    return `<div class="card pad">
-      <div style="display:flex;align-items:flex-start;gap:13px">
-        ${agentAvatar(n, avOf(n), 58)}
-        <div style="flex:1;min-width:0">
-          <div class="tm-name">${esc(n)}</div>
-          <div class="tm-sub">${esc(u.cawangan || '—')}</div>
-        </div>
-        <span class="tm-badge" style="background:${badge[1]};color:${badge[2]}">${badge[0]}</span>
-      </div>
-      <div class="tm-grid">
-        <div class="tm-box"><div class="tm-v">${st.leads}</div><div class="tm-l">Leads</div></div>
-        <div class="tm-box"><div class="tm-v" style="color:${C.green}">${st.closed}</div><div class="tm-l">Close</div></div>
-        <div class="tm-box"><div class="tm-v">${st.pax}</div><div class="tm-l">Pax</div></div>
-        <div class="tm-box"><div class="tm-v">${st.leads ? Math.round(st.closed / st.leads * 100) : 0}%</div><div class="tm-l">Kadar</div></div>
-      </div>
-      <div style="margin-top:20px">
-        <div class="tm-brow"><span class="tm-blb">Jualan vs sasaran</span><span class="tm-bval">${fmtK(st.sales)}</span></div>
-        <div class="tm-bar"><div style="width:${pc}%;background:${bwarna}"></div></div>
-      </div>
-    </div>`;
-  }).join('');
-  const chips = [''].concat(zons).map(z => `<div class="as-chip${zonF === z ? ' on' : ''}" onclick="setTeamZon('${z}')"><span class="sq" style="background:${z ? C.blue : '#9aa5ba'}"></span>${z || 'Semua zon'}</div>`).join('');
-  $('pg-team').innerHTML = `
-  <div class="wrap18">
-    <div class="card"><div class="as-fhd" style="border-bottom:none">
-      <div style="flex:1;min-width:200px"><div class="ct">Prestasi Agent — ${MON[c.mo]} ${c.yr}</div><div class="cs">${ALL_AGENTS.length} agent aktif · sasaran ${fmtRM(Math.round(perTgt))} sebulan setiap agent</div></div>
-      ${chips}
-    </div></div>
-    ${names.length ? `<div class="team">${cards}</div>` : '<div class="card empty"><div class="empty-t">Tiada agent ditemui</div><div class="empty-s">Cuba tukar penapis zon anda</div></div>'}
-  </div>`;
-}
-
 /* ══════════════════ After Sales ══════════════════ */
 function asKategori(l){
   const n = ckCount(l);
@@ -3065,18 +3016,18 @@ function resetDemo(){
 
 /* ══════════════════ Navigasi & rangka ══════════════════ */
 const PAGES = {
-  dashboard:  { r:renderDash,       t:() => salam(), s:() => fmtHari(new Date()) + ' · Gambaran keseluruhan perniagaan' },
-  leads:      { r:renderLeads,      t:() => S.leads.followupMode ? 'Lead Perlu Follow Up' : 'Semua Leads', s:() => S.leads.followupMode ? (staleLeads().length + ' lead Contacted tanpa kemas kini selama 3 hari atau lebih') : (visLeads().length + ' jumlah lead dalam sistem') },
-  pipeline:   { r:renderPipeline,   t:() => 'Sales Pipeline', s:() => 'Lead ikut peringkat jualan · tarik untuk pindah' },
-  team:       { r:renderTeam,       t:() => 'Prestasi Pasukan', s:() => ALL_AGENTS.length + ' agent aktif · ' + CAWANGAN_COUNT + ' cawangan · 5 zon' },
-  aftersales: { r:renderAfterSales, t:() => 'After Sales', s:() => visLeads().filter(l => l.status === 'Closed').length + ' jemaah berdaftar · checklist sebelum berlepas' },
-  kempen:     { r:renderKempen,     t:() => 'Kempen Iklan', s:() => { const c = curMo(); return 'Meta Ads · ' + MY_MONTHS[c.mo] + ' ' + c.yr; } },
-  laporan:    { r:renderLaporan,    t:() => 'Laporan Bulanan', s:() => 'Dikira terus dari data lead · sedia dimuat turun' },
-  agent:      { r:renderAgent,      t:() => 'Agent', s:() => allUsers.filter(u => u.status === 'active').length + ' akaun aktif · ' + allUsers.filter(u => u.status === 'pending').length + ' jemputan belum diterima' },
-  pakej:      { r:renderPakej,      t:() => 'Pakej Umrah', s:() => allPkgs.length + ' pakej · ' + allPkgs.reduce((s,p) => s + leadAktifPakej(p.name), 0) + ' lead aktif' },
-  recycle:    { r:renderRecycle,    t:() => 'Recycle Bin', s:() => trashedLeads.length + ' lead dipadam · boleh dipulihkan' },
-  profil:     { r:renderProfil,     t:() => 'Profil Saya', s:() => 'Maklumat akaun anda' },
-  settings:   { r:renderSettings,   t:() => 'Settings', s:() => 'Sasaran dan penyelenggaraan data' }
+  dashboard:  { r:()=>renderDash(),       t:() => salam(), s:() => fmtHari(new Date()) + ' · Gambaran keseluruhan perniagaan' },
+  leads:      { r:()=>renderLeads(),      t:() => S.leads.followupMode ? 'Lead Perlu Follow Up' : 'Semua Leads', s:() => S.leads.followupMode ? (staleLeads().length + ' lead Contacted tanpa kemas kini selama 3 hari atau lebih') : (visLeads().length + ' jumlah lead dalam sistem') },
+  pipeline:   { r:()=>renderPipeline(),   t:() => 'Sales Pipeline', s:() => 'Lead ikut peringkat jualan · tarik untuk pindah' },
+  team:       { r:()=>renderTeam(),       t:() => 'Prestasi Pasukan', s:() => ALL_AGENTS.length + ' agent aktif · ' + CAWANGAN_COUNT + ' cawangan · 5 zon' },
+  aftersales: { r:()=>renderAfterSales(), t:() => 'After Sales', s:() => visLeads().filter(l => l.status === 'Closed').length + ' jemaah berdaftar · checklist sebelum berlepas' },
+  kempen:     { r:()=>renderKempen(),     t:() => 'Kempen Iklan', s:() => { const c = curMo(); return 'Meta Ads · ' + MY_MONTHS[c.mo] + ' ' + c.yr; } },
+  laporan:    { r:()=>renderLaporan(),    t:() => 'Laporan Bulanan', s:() => 'Dikira terus dari data lead · sedia dimuat turun' },
+  agent:      { r:()=>renderAgent(),      t:() => 'Agent', s:() => allUsers.filter(u => u.status === 'active').length + ' akaun aktif · ' + allUsers.filter(u => u.status === 'pending').length + ' jemputan belum diterima' },
+  pakej:      { r:()=>renderPakej(),      t:() => 'Pakej Umrah', s:() => allPkgs.length + ' pakej · ' + allPkgs.reduce((s,p) => s + leadAktifPakej(p.name), 0) + ' lead aktif' },
+  recycle:    { r:()=>renderRecycle(),    t:() => 'Recycle Bin', s:() => trashedLeads.length + ' lead dipadam · boleh dipulihkan' },
+  profil:     { r:()=>renderProfil(),     t:() => 'Profil Saya', s:() => 'Maklumat akaun anda' },
+  settings:   { r:()=>renderSettings(),   t:() => 'Settings', s:() => 'Sasaran dan penyelenggaraan data' }
 };
 function salam(){
   const h = nowMY().getUTCHours();
@@ -3679,51 +3630,6 @@ async function hantarGambar(file, id){
 }
 
 /* ══════════════════ Agent / pengguna ══════════════════ */
-function openAddUser(){
-  if (!isSuper()){ toast('Hanya Super Admin boleh urus agent.', true); return; }
-  $('mu-title').textContent = 'Daftar Agent Baru';
-  $('mu-id').value = ''; $('mu-email').value = ''; $('mu-email').disabled = false;
-  $('mu-name').value = ''; $('mu-phone').value = '';
-  $('mu-cawangan').innerHTML = cawanganOptions('');
-  $('mu-role').value = 'agent';
-  om('m-user');
-}
-function editUser(id){
-  if (!isSuper()) return;
-  const u = allUsers.filter(x => x._id === id)[0]; if (!u) return;
-  $('mu-title').textContent = 'Kemaskini Agent';
-  $('mu-id').value = id; $('mu-email').value = u.email || id; $('mu-email').disabled = true;
-  $('mu-name').value = u.name || ''; $('mu-phone').value = u.phone || '';
-  $('mu-cawangan').innerHTML = cawanganOptions(u.cawangan || '');
-  $('mu-role').value = u.role || 'agent';
-  om('m-user');
-}
-async function saveUser(){
-  if (!isSuper()){ toast('Hanya Super Admin boleh urus agent.', true); return; }
-  const idSedia = $('mu-id').value;
-  const email = ($('mu-email').value || '').trim().toLowerCase();
-  const name = $('mu-name').value.trim();
-  const phone = normalizePhoneMY($('mu-phone').value);
-  const cawangan = $('mu-cawangan').value;
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ toast('E-mel tidak sah.', true); return; }
-  if (!name){ toast('Nama penuh wajib diisi.', true); return; }
-  if (!phone || phone.length < 10){ toast('No. WhatsApp wajib (cth: 60123456789).', true); return; }
-  const clash = allUsers.filter(u => (u.email||'').toLowerCase() !== email && u.status === 'active' && (u.name||'').trim().toLowerCase() === name.toLowerCase())[0];
-  if (clash){ toast('Nama "' + name + '" sudah digunakan agent lain.', true); return; }
-  const lama = idSedia ? allUsers.filter(x => x._id === idSedia)[0] : null;
-  const data = { name:name, phone:phone, cawangan:cawangan, role:$('mu-role').value };
-  if (!lama){ data.status = 'active'; data.createdAt = new Date().toISOString(); }
-  try {
-    await API.saveUser(email, data);
-    if (lama && (lama.name||'').trim() !== name){
-      const dulu = (lama.name||'').trim();
-      const kena = allLeads.filter(l => l.agent === dulu);
-      for (let i = 0; i < kena.length; i++) await API.updateLead(kena[i]._id, { agent:name });
-      if (stateAssign[dulu]){ stateAssign[name] = stateAssign[dulu]; delete stateAssign[dulu]; await API.saveStateAssign(); }
-    }
-    cm('m-user'); toast('Agent disimpan.');
-  } catch(e){ toast('Ralat: ' + e.message, true); }
-}
 async function toggleUserStatus(id){
   if (!isSuper()) return;
   const u = allUsers.filter(x => x._id === id)[0]; if (!u) return;
@@ -4023,87 +3929,6 @@ else init();
   .team-summary{grid-template-columns:1fr}
 }
 </style>
-<script>
-(function(){
-  function actualRM(n){ return fmtRM(Number(n)||0); }
-  function actualNum(n){ return nf(Number(n)||0); }
-  function statusTone(pc){
-    if(pc>=100) return ['Juara bulan ini','gold'];
-    if(pc>=75) return ['Sedang memburu podium','silver'];
-    if(pc>=40) return ['Masih dalam permainan','bronze'];
-    return ['Perlu pecut lagi','bronze'];
-  }
-  window.renderDash = function(){
-    const r=dashRange(), m=aggDashRange(r), pr=previousDashRange(r), prev=aggDashRange(pr), target=dashTarget(r);
-    const gLead=prev.leads?Math.round((m.leads-prev.leads)/prev.leads*100):0;
-    const gClose=prev.closed?Math.round((m.closed-prev.closed)/prev.closed*100):0;
-    const growth=v=>v>=0
-      ? `<div class="kpi-up">${I.caret}${v}%</div>`
-      : `<div class="kpi-up kpi-dn"><span style="display:flex;transform:rotate(180deg)">${I.caret}</span>${Math.abs(v)}%</div>`;
-    const dashFilter=`<div class="dash-filter-clean">
-      <div class="dash-filter-row">
-        <div class="dash-filter-title">Track Performance</div>
-        <select class="dash-select" onchange="setDashPreset(this.value)">
-          ${[['today','Hari Ini'],['yesterday','Semalam'],['last3','3 Hari Lepas'],['last7','7 Hari Lepas'],['last30','30 Hari'],['month','Bulan Ini'],['prevmonth','Bulan Lepas'],['custom','Pilih Tarikh']].map(x=>`<option value="${x[0]}"${r.preset===x[0]?' selected':''}>${x[1]}</option>`).join('')}
-        </select>
-        <div class="dash-range-pill">${esc(r.label)}</div>
-      </div>
-      ${r.preset==='custom'?`<div class="dash-date-clean"><input type="date" value="${esc(S.dashboard.start)}" onchange="setDashCustom('start',this.value)"><span class="sep">hingga</span><input type="date" value="${esc(S.dashboard.end)}" onchange="setDashCustom('end',this.value)"></div>`:''}
-      <div class="dash-note-line">Semua KPI, trend, status, jualan agent dan zon akan berubah ikut tempoh yang dipilih.</div>
-      ${!m.spendInfo.available?`<div class="dash-warning">Kos iklan, CPL dan ROAS hanya dipaparkan bila sistem ada <b>rekod spend sebenar</b> untuk tempoh tersebut. Jika tiada log spend sebenar untuk tarikh tersebut, sistem akan paparkan “—”.</div>`:''}
-    </div>`;
-    const spendSub=m.spendInfo.available?`${esc(m.spendInfo.source)} · ${actualRM(m.spend)}`:esc(m.spendInfo.source);
-    const kpis=`<div class="kpis">
-      <div class="card pad"><div class="kpi-hd"><div class="kpi-ic" style="background:#e8f0ff">${I.users(C.blue)}</div><div class="kpi-lb">Jumlah Leads</div></div><div class="kpi-row"><div class="kpi-big">${actualNum(m.leads)}</div>${growth(gLead)}</div><div class="kpi-sub">Lead masuk · ${esc(r.label)}</div></div>
-      <div class="card pad"><div class="kpi-hd"><div class="kpi-ic" style="background:#e7f6ec">${I.check(C.green)}</div><div class="kpi-lb">Berjaya Close</div></div><div class="kpi-row"><div class="kpi-big">${actualNum(m.closed)}</div>${growth(gClose)}</div><div class="kpi-sub">${actualNum(m.closed)} lead berjaya close dalam tempoh</div></div>
-      <div class="card pad"><div class="kpi-hd"><div class="kpi-ic" style="background:#f0e9ff">${I.wallet(C.purple)}</div><div class="kpi-lb">Jumlah Jualan</div></div><div class="kpi-row"><div class="kpi-big">${actualRM(m.sales)}</div></div><div class="kpi-sub">Purata ${fmtRM(m.closed?m.sales/m.closed:0)} / close</div></div>
-      <div class="card pad"><div class="kpi-hd"><div class="kpi-ic" style="background:#fdf0e0">${I.arrowUR(C.amber)}</div><div class="kpi-lb">Kos Iklan, CPL &amp; ROAS</div></div><div class="kpi-row" style="gap:18px"><div><div class="kpi-mid">${m.spendInfo.available?actualRM(m.spend):'—'}</div><div class="kpi-mlb">Spend</div></div><div class="kpi-div"></div><div><div class="kpi-mid">${m.cpl==null?'—':'RM '+actualNum(m.cpl)}</div><div class="kpi-mlb">CPL</div></div><div class="kpi-div"></div><div><div class="kpi-mid" style="color:#16a34a">${m.roas==null?'—':m.roas+'×'}</div><div class="kpi-mlb">ROAS</div></div></div><div class="kpi-sub">${spendSub}</div></div>
-    </div>`;
-    const targets=[
-      {lb:'Pax',val:m.pax,sas:target.pax,warna:C.blue,vs:`${actualNum(m.pax)} / ${actualNum(target.pax)}`,teks:m.pax>=target.pax?'Sasaran bulanan tercapai 🎉':`${actualNum(Math.max(0,target.pax-m.pax))} pax lagi ke sasaran bulanan`},
-      {lb:'Leads',val:m.leads,sas:target.leads,warna:C.purple,vs:`${actualNum(m.leads)} / ${actualNum(target.leads)}`,teks:`Data sebenar ${actualNum(m.leads)} lead dalam tempoh dipilih`},
-      {lb:'Jualan',val:m.sales,sas:target.sales,warna:C.green,vs:`${actualRM(m.sales)} / ${actualRM(target.sales)}`,teks:m.sales>=target.sales?'Sasaran bulanan tercapai 🎉':`${actualRM(Math.max(0,target.sales-m.sales))} lagi ke sasaran bulanan`},
-      {lb:'Belanja Iklan',val:m.spend,sas:target.spend,warna:C.amber,vs:`${m.spendInfo.available?actualRM(m.spend):'—'} / ${actualRM(target.spend)}`,teks:!m.spendInfo.available?'Spend sebenar belum tersedia untuk tempoh ini':(m.spend<=target.spend?'Masih dalam bajet bulanan':'Melebihi bajet bulanan')}
-    ];
-    const tgHTML=`<div class="target-stack">${targets.map(t=>`<div class="target-item"><div class="target-head"><span class="target-label">${t.lb}</span><span class="target-value">${t.vs}</span></div><div class="tg-bar"><div style="width:${pct(t.val,t.sas)}%;background:${t.warna}"></div></div><div class="target-desc">${t.teks}</div></div>`).join('')}</div>`;
-
-    const tr=dashTrendBuckets(r); const TP=tr.points.map(p=>({label:p.label,leads:leadsDashRange(p).length,closed:salesDashRange(p).length}));
-    const maxL=Math.max.apply(null,TP.map(x=>Math.max(x.leads,x.closed)).concat([4])); const W=640,H=250,PADL=34,PADB=28,PT=14,den=Math.max(1,TP.length-1);
-    const px=i=>PADL+i*((W-PADL-8)/den), py=v=>PT+(H-PADB-PT)*(1-v/maxL), lineOf=k=>TP.map((x,i)=>(i?'L':'M')+px(i).toFixed(1)+' '+py(x[k]).toFixed(1)).join(' '), areaOf=k=>lineOf(k)+' L'+px(TP.length-1).toFixed(1)+' '+(H-PADB)+' L'+px(0).toFixed(1)+' '+(H-PADB)+' Z';
-    const every=Math.max(1,Math.ceil(TP.length/8)); const lbls=TP.map((x,i)=>(i%every===0||i===TP.length-1)?`<text x="${px(i)}" y="${H-8}" font-size="11.5" fill="#8a95ab" text-anchor="middle">${esc(x.label)}</text>`:'').join('');
-    const trend=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block"><defs><linearGradient id="gL3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2563eb" stop-opacity=".16"/><stop offset="100%" stop-color="#2563eb" stop-opacity="0"/></linearGradient></defs>${[0,.5,1].map(f=>`<line x1="${PADL}" y1="${py(maxL*f)}" x2="${W-8}" y2="${py(maxL*f)}" stroke="#eef1f8" stroke-width="1.5"/><text x="${PADL-8}" y="${py(maxL*f)+4}" font-size="11.5" fill="#8a95ab" text-anchor="end">${Math.round(maxL*f)}</text>`).join('')}<path d="${areaOf('leads')}" fill="url(#gL3)"/><path d="${lineOf('leads')}" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-linejoin="round"/><path d="${lineOf('closed')}" fill="none" stroke="#16a34a" stroke-width="2.6" stroke-linejoin="round"/><circle cx="${px(TP.length-1)}" cy="${py(TP[TP.length-1].leads)}" r="5" fill="#fff" stroke="#2563eb" stroke-width="2.6"/>${lbls}</svg>`;
-    const fl=leadsDashRange(r),stC={}; STATUSES.forEach(s=>stC[s]=fl.filter(l=>l.status===s).length); const totSt=fl.length||1; let acc=0;
-    const seg=STATUSES.filter(s=>stC[s]>0).map(s=>{const a=acc/totSt*360,b=(acc+stC[s])/totSt*360;acc+=stC[s];return PILL[s].dot+' '+a.toFixed(1)+'deg '+b.toFixed(1)+'deg';}).join(', ');
-    const donut=`<div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:18px"><div style="width:150px;height:150px;border-radius:50%;background:${fl.length?'conic-gradient('+seg+')':'#eef1f8'};display:flex;align-items:center;justify-content:center;flex:none"><div style="width:96px;height:96px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:26px;font-weight:800;letter-spacing:-.8px">${actualNum(fl.length)}</div><div style="font-size:13px;color:#79869e">lead</div></div></div><div style="flex:1;min-width:170px">${STATUSES.map(s=>`<div style="display:flex;align-items:center;gap:10px;padding:5px 0"><span style="width:11px;height:11px;border-radius:4px;background:${PILL[s].dot};flex:none"></span><span style="flex:1;font-size:15.5px;font-weight:600;color:#3c4a66">${s}</span><span style="font-size:15.5px;font-weight:800">${actualNum(stC[s])}</span></div>`).join('')}</div></div>`;
-    const lb=ALL_AGENTS.map(n=>{const st=agentDashStat(n,r);return {n:n,sales:st.sales,closed:st.closed};}).sort((a,b)=>b.sales-a.sales).slice(0,5);
-    const lbHTML=lb.map((x,i)=>`<div class="lb-row${i===0?' top':''}"><div class="lb-rank">${i+1}</div>${agentAvatar(x.n,avOf(x.n),38)}<div style="flex:1;min-width:0"><div class="lb-name">${esc(x.n)}</div><div class="lb-sub">${esc((userByName(x.n)||{}).cawangan||'—')}</div></div><div style="text-align:right"><div class="lb-val actual">${actualRM(x.sales)}</div><div class="lb-cl actual">${actualNum(x.closed)} close</div></div></div>`).join('')||'<div class="empty-s" style="padding:14px 0">Tiada jualan dalam tempoh ini.</div>';
-    const zon={}; ZON_NEGERI.forEach(z=>zon[z[0]]=0); salesDashRange(r).forEach(l=>{const z=NEG2ZON[l.negeri]||'Lain';zon[z]=(zon[z]||0)+leadVal(l);});
-    const zoneEntries=ZON_NEGERI.map(z=>z[0]).filter(z=>z!=='Lain'||zon[z]>0).map(z=>({name:z,value:zon[z]||0})).sort((a,b)=>b.value-a.value); const maxZ=Math.max.apply(null,zoneEntries.map(x=>x.value).concat([1])); const totalZone=zoneEntries.reduce((s,x)=>s+x.value,0);
-    const znHTML=`<div class="zone2-head"><div><div class="ct">Jualan Ikut Zon</div><div class="cs">${esc(r.label)} · berdasarkan lead berstatus Close</div></div><div class="zone2-count">${zoneEntries.length} zon</div></div><div class="zone2-total">${actualRM(totalZone)}</div><div class="zone2-list">${zoneEntries.map(z=>{ const prc=totalZone?Math.round(z.value/totalZone*100):0; return `<div class="zone2-item"><div class="zone2-row"><span class="zone2-lb">${z.name}</span><span class="zone2-val">${actualRM(z.value)}</span></div><div class="zone2-meta"><span>${prc}% daripada jualan</span><span>${actualNum(z.value)}</span></div><div class="zone2-bar"><div style="width:${Math.round(z.value/maxZ*100)}%"></div></div></div>`; }).join('')}</div>`;
-    const acts=[]; allLeads.forEach(l=>(l.activityLog||[]).forEach(g=>{const d=parseCRMDate(g.t);if(dateInDashRange(d,r))acts.push({t:g.t,act:g.act,by:g.by,name:l.name});})); acts.sort((a,b)=>new Date(b.t)-new Date(a.t));
-    const tagOf=a=>/dicipta|baru/i.test(a)?['NEW','#e8f0ff',C.blue]:(/Closed/i.test(a)?['RM','#e7f6ec',C.green]:(/Recycle|padam/i.test(a)?['DEL','#fdeaea',C.red]:(/WhatsApp|WA/i.test(a)?['WA','#e7f6ec',C.green]:['EDIT','#fdf0e0',C.amber])));
-    const acHTML=acts.slice(0,5).map(a=>{const t=tagOf(a.act);return `<div class="ac-row"><div class="ac-tag" style="background:${t[1]};color:${t[2]}">${t[0]}</div><div style="flex:1;min-width:0"><div class="ac-txt">${esc(a.by||'?')} — ${esc(a.act)} (${esc((a.name||'').toUpperCase())})</div><div class="ac-time">${relTime(a.t)}</div></div></div>`;}).join('')||'<div class="empty-s" style="padding:14px 0">Tiada aktiviti dalam tempoh ini.</div>';
-    $('pg-dashboard').innerHTML=`<div class="wrap">${dashFilter}${kpis}<div class="card pad dashboard-section-space"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><div><div class="ct">Prestasi Sebenar vs Sasaran Bulanan</div><div class="cs">Data tempoh dipilih dibandingkan dengan sasaran bulanan tetap</div></div><div style="font-size:13px;color:#8a95ab;text-align:right">${esc(r.label)}</div></div>${tgHTML}</div><div class="grid2 dashboard-section-space"><div class="card pad"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div class="ct">Trend Lead &amp; Close</div><div class="cs">${tr.mode} · ${esc(r.label)}</div></div><div style="display:flex;gap:16px;font-size:14.5px;font-weight:600;color:#3c4a66"><span style="display:flex;align-items:center;gap:7px"><span style="width:11px;height:11px;border-radius:4px;background:#2563eb"></span>Leads</span><span style="display:flex;align-items:center;gap:7px"><span style="width:11px;height:11px;border-radius:4px;background:#16a34a"></span>Close</span></div></div><div style="margin-top:16px">${trend}</div></div><div class="card pad"><div class="ct">Status Lead</div><div class="cs">Pecahan ${actualNum(fl.length)} lead · ${esc(r.label)}</div>${donut}</div></div><div class="grid3 dashboard-section-space"><div class="card pad"><div style="display:flex;align-items:center;gap:10px">${I.trophy}<div class="ct">Papan Pendahulu</div></div><div class="cs" style="margin-top:4px">${esc(r.label)}</div><div style="margin-top:14px">${lbHTML}</div></div><div class="card pad">${znHTML}</div><div class="card pad"><div class="ct">Aktiviti Terkini</div><div class="cs">${esc(r.label)}</div><div style="margin-top:14px">${acHTML}</div></div></div></div>`;
-  };
-
-  window.renderTeam = function(){
-    const c=curMo(); const zons=['Zon Tengah','Zon Utara','Zon Selatan','Zon Timur','Zon Borneo']; const zonF=S.team.zon;
-    let names=ALL_AGENTS.filter(n=>{ const u=userByName(n); return (!zonF || (u && zonCawangan(u.cawangan||'')===zonF)) && (!S.q || n.toLowerCase().indexOf(S.q.toLowerCase())>=0); });
-    const perTgt = TARGET.sales / Math.max(1, ALL_AGENTS.length);
-    const ranked=names.map(n=>{ const st=agenStatBulan(n,c.mo,c.yr); const u=userByName(n)||{}; const rate=st.leads?Math.round(st.closed/st.leads*100):0; const pc=pct(st.sales, perTgt); return {name:n,u,st,rate,pc}; }).sort((a,b)=> b.st.sales-a.st.sales || b.st.closed-a.st.closed || b.st.leads-a.st.leads || a.name.localeCompare(b.name));
-    const top3=ranked.slice(0,3); const rest=ranked.slice(3);
-    const chips=[''].concat(zons).map(z=>`<div class="as-chip${zonF===z?' on':''}" onclick="setTeamZon('${z}')"><span class="sq" style="background:${z ? C.blue : '#9aa5ba'}"></span>${z || 'Semua zon'}</div>`).join('');
-    const totals=ranked.reduce((acc,x)=>{acc.leads+=x.st.leads; acc.closed+=x.st.closed; acc.sales+=x.st.sales; acc.pax+=x.st.pax; return acc;},{leads:0,closed:0,sales:0,pax:0});
-    const avgClose=ranked.length ? Math.round(ranked.reduce((s,x)=>s+x.rate,0)/ranked.length) : 0;
-    const summary=`<div class="team-summary"><div class="sum-box"><div class="sum-l">Jumlah Jualan Pasukan</div><div class="sum-v">${actualRM(totals.sales)}</div></div><div class="sum-box"><div class="sum-l">Jumlah Lead</div><div class="sum-v">${actualNum(totals.leads)}</div></div><div class="sum-box"><div class="sum-l">Jumlah Close</div><div class="sum-v">${actualNum(totals.closed)}</div></div><div class="sum-box"><div class="sum-l">Purata Kadar Close</div><div class="sum-v">${avgClose}%</div></div></div>`;
-    const podiumOrder=[1,0,2].filter(i=>top3[i]);
-    const podium=podiumOrder.map(idx=>{ const x=top3[idx]; const realRank=ranked.findIndex(r=>r.name===x.name)+1; const tone=statusTone(x.pc); const cls=realRank===1?'first':(realRank===2?'second':'third'); const badgeCls=realRank===1?'gold':(realRank===2?'silver':'bronze'); return `<div class="podium-card ${cls}">${realRank===1?'<div class="podium-crown">👑</div>':''}<div class="podium-rank">${realRank}</div><div class="podium-top">${agentAvatar(x.name,avOf(x.name),60)}<div style="min-width:0;flex:1"><div class="podium-name">${esc(x.name)}</div><div class="podium-sub">${esc(x.u.cawangan||'—')}</div></div></div><div class="podium-badge ${badgeCls}">${realRank===1?'#1':realRank===2?'#2':'#3'} · ${tone[0]}</div><div class="podium-sales">${actualRM(x.st.sales)}</div><div class="podium-grid"><div class="podium-box"><div class="v">${actualNum(x.st.leads)}</div><div class="l">Leads</div></div><div class="podium-box"><div class="v">${actualNum(x.st.closed)}</div><div class="l">Close</div></div><div class="podium-box"><div class="v">${actualNum(x.st.pax)}</div><div class="l">Pax</div></div><div class="podium-box"><div class="v">${x.rate}%</div><div class="l">Kadar</div></div></div><div class="podium-progress"><div class="row"><span>Jualan vs sasaran</span><span>${actualRM(x.st.sales)} / ${actualRM(Math.round(perTgt))}</span></div><div class="bar ${x.pc>=75?'green':''}"><div style="width:${Math.min(100,x.pc)}%"></div></div></div></div>`; }).join('');
-    const cards=ranked.map((x,i)=>{ const tone=statusTone(x.pc); return `<div class="rank-card"><div class="r-num">#${i+1}</div><div class="r-top">${agentAvatar(x.name,avOf(x.name),54)}<div style="min-width:0;flex:1"><div class="r-name">${esc(x.name)}</div><div class="r-sub">${esc(x.u.cawangan||'—')}</div><div class="r-tag">${tone[0]}</div></div></div><div class="r-stats"><div class="r-stat"><div class="v">${actualNum(x.st.leads)}</div><div class="l">Leads</div></div><div class="r-stat"><div class="v" style="color:${C.green}">${actualNum(x.st.closed)}</div><div class="l">Close</div></div><div class="r-stat"><div class="v">${actualNum(x.st.pax)}</div><div class="l">Pax</div></div><div class="r-stat"><div class="v">${x.rate}%</div><div class="l">Kadar</div></div></div><div class="r-money"><div><div class="lb">Jualan semasa</div><div class="val">${actualRM(x.st.sales)}</div></div><div style="text-align:right"><div class="lb">Sasaran agent</div><div class="lb" style="font-size:14px;color:#0f172a">${actualRM(Math.round(perTgt))}</div></div></div><div class="r-progress"><div class="row"><span>Progress ke sasaran</span><span>${x.pc}%</span></div><div class="bar"><div style="width:${Math.min(100,x.pc)}%"></div></div></div></div>`; }).join('');
-    $('pg-team').innerHTML=`<div class="wrap18 team-v12-wrap"><div class="card"><div class="as-fhd" style="border-bottom:none"><div class="team-topbar" style="width:100%"><div><div class="team-head-title">Prestasi Agent — ${MON[c.mo]} ${c.yr}</div><div class="team-head-sub">Liga jualan semasa · susunan mengikut jumlah jualan sebenar untuk hidupkan persaingan pasukan</div></div><div>${chips}</div></div></div></div>${summary}${top3.length?`<div class="team-podium">${podium}</div>`:''}${ranked.length?`<div class="team-rank-grid">${cards}</div>`:'<div class="card empty"><div class="empty-t">Tiada agent ditemui</div><div class="empty-s">Cuba tukar penapis zon anda</div></div>'}</div>`;
-  };
-})();
-</script>
-
 
 <style>
 /* ===== v13 editable agent profile ===== */
@@ -4358,8 +4183,6 @@ else init();
       </div>
     </div>`;
   };
-  if (window.PAGES && PAGES.team) PAGES.team.r = window.renderTeam;
-  if (window.S && S.page === 'team' && typeof render === 'function') { try { render(); } catch(e){} }
 })();
 </script>
 

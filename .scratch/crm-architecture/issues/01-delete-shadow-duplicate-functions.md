@@ -4,10 +4,33 @@
 
 **Blocked by:** None — can start immediately
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `renderDash` exists once (the version currently at `index.html:4041`); the shadowed copy at `:1905` is gone
-- [ ] `renderTeam` exists once (the version currently at `index.html:4286`); the shadowed copies at `:2149` and `:4094` are gone
-- [ ] `openAddUser`, `editUser`, `saveUser` each exist once (the versions currently at `:4149`/`:4163`/`:4185`); the shadowed copies at `:3687`/`:3696`/`:3706` are gone
-- [ ] Empty IIFE wrappers that only existed to reassign the now-deleted duplicates are removed
-- [ ] Manually verify in the running app: dashboard renders, team view renders, adding/editing a user still works exactly as before
+## Important deviation from the original plan — read before touching this again
+
+The spec assumed "whichever definition executes last wins," which is true for `openAddUser`/`editUser`/`saveUser` (invoked via `onclick="saveUser()"` — a fresh global lookup on every click) but **false** for `renderDash`/`renderTeam`. Those are reached through the `PAGES` navigation table (`const PAGES = { dashboard: {r: renderDash, ...}, team: {r: renderTeam, ...}, ... }`), which captured a **snapshot of the function reference at the moment `PAGES` was built** — not a live binding. Since `PAGES` is constructed early in the document, `PAGES.dashboard.r`/`PAGES.team.r` permanently pointed at whichever version was defined *first*, regardless of any later reassignment.
+
+Deleting the "obviously old" first copies (as originally planned) crashed the app immediately (`ReferenceError: renderDash is not defined`) because `PAGES` was built before any surviving definition existed. Investigating further, in the **unmodified app**:
+- `renderDash`: normal navigation showed the *original* (older) version. A second, later `window.renderDash = ...` reassignment existed but was **only reachable by changing the dashboard's date filter** (`setDashPreset`/`setDashCustom` call `renderDash()` as a bare identifier, bypassing `PAGES`) — so the dashboard visibly changed design after interacting with the filter. Pre-existing bug, not introduced here.
+- `renderTeam`: normal navigation showed the *original* (oldest, plainest) version. Two later redesigns existed (`window.renderTeam` reassigned twice — a "v12" and a "v14" hero+podium version) and were **completely unreachable by anything** — 100% dead code, not just shadowed.
+
+Verified all of this empirically in a real browser (not just by reading code) before deciding what to keep.
+
+## What was decided (user chose, with screenshots of each candidate shown side by side)
+
+- [x] **Dashboard**: kept the version that was already live via normal navigation (`index.html:1900`, unchanged). Deleted the shadowed second copy.
+- [x] **Team**: kept the "v14" hero+podium redesign (previously 100% dead code) instead of the plain version that was actually rendering — user's call, since the v14 version is the more complete/polished design. Deleted both older copies (the originally-live plain version and the intermediate "v12" copy).
+- [x] `openAddUser`, `editUser`, `saveUser` each exist once now (the richer versions with status/email-change/last-login fields — these were already correctly reachable, per the "last wins on every click" mechanism). The three older, simpler duplicates are gone.
+- [x] **Root cause fixed, not just papered over**: `PAGES`'s `r:` entries were eager references (`r: renderDash`), which is what made deleting "the wrong copy" possible in the first place and what caused the dashboard's own pre-existing filter-change bug. Changed every `PAGES` entry to a lazy wrapper (`r: () => renderDash()`, etc.) so navigation always calls whichever definition currently exists, for every page — this can't silently drift again even if a future edit reintroduces a duplicate.
+- [x] The `<script>` block housing the two dead reassignments (`window.renderDash` v2 + `window.renderTeam` "v12") became fully dead once both were removed — its local helpers (`actualRM`, `actualNum`, `statusTone`) were confirmed unused anywhere else and deleted along with it. This is the "empty IIFE" cleanup the spec anticipated, just for different functions than assumed.
+- [x] Manually verified in a real Chrome tab (demo mode): dashboard renders (matches pre-refactor design), team page renders the v14 design *through normal sidebar navigation* (previously only reachable via manual console call), changing the dashboard date filter no longer changes the page's design (bug fixed), Agent → "Daftar Agent Baru" form opens with the full field set (status, last-login, etc.), no console errors on fresh load or during any of the above interactions.
+- [x] `npm test` (12 tests, from ticket 03) still passes — unaffected by this ticket, re-run as a regression check.
+
+## Code review findings (all verified and addressed)
+
+- [x] **Dead patch line defeating the PAGES fix (false positive, verified then left fixed anyway)**: found `if (window.PAGES && PAGES.team) PAGES.team.r = window.renderTeam;` right after the (kept) v14 `renderTeam` definition — looked like it would re-introduce eager capture for `team` specifically. Verified empirically in a browser: `window.PAGES` and `window.S` are `undefined` (top-level `const`/`let` don't attach to `window` the way `var`/function declarations do), so this line's condition was **already always false** — it never executed, in the original app or after this change. It was dead, broken "fix-the-symptom" code (someone hit the exact team-page bug this ticket root-caused, patched around it, and got the patch itself wrong). Deleted it along with the equally-dead re-render line next to it, since the real fix (lazy `PAGES` wrappers) supersedes it.
+- [x] **Silent bad-date write in `betulkan-sales.mjs`/`fix-old-data.mjs`**: `parseCRMDate()` never throws (falls back to epoch) where the old inline `new Date(entry).toISOString()` would throw and halt the script on a malformed date — for scripts whose entire purpose is repairing dirty legacy data, silently writing `closedAt: '1970-01-01...'` instead of stopping is a real regression. Added an explicit `if (!d.getTime())` guard in both scripts that skips the lead (same as the existing "no date at all" path) instead of writing an epoch date.
+- [x] **`audit-leads.mjs` kIn/kClose parsed with two different rules**: `kIn` used a raw `new Date(raw)` (parses `YYYY-MM-DD` as UTC midnight) while `kClose` used the new `closedDate()`/`parseCRMDate()` (parses `YYYY-MM-DD` as local midnight) — could shift month-bucketing and the "Close SEBELUM masuk" flag near month boundaries. Made `key()` itself use `parseCRMDate`, so both `kIn` and `kClose` now share the exact same parsing rule.
+- Noted but not changed: `fix-old-data.mjs` and `betulkan-sales.mjs` are now near-duplicates of each other (same backfill logic, independently defanged). Not consolidating without asking, since the user explicitly chose to keep both as separate safety nets earlier in this session — flagging for a future decision rather than unilaterally merging/deleting one.
+- Noted but not changed: CLAUDE.md documents GitHub Issues as the tracker; this initiative uses local `.scratch/` files because `gh` isn't installed on this machine — a deliberate, already-agreed deviation for this session, not a defect.
+- Not touched: the `.gitignore` diff ignoring `.claude/`/`CLAUDE.md`/`docs/agents/` predates this session's work and isn't part of this ticket's changes.
