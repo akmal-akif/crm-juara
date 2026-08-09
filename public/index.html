@@ -335,20 +335,35 @@ table.tbl{width:100%;border-collapse:collapse}
 /* ── Kempen ── */
 .km-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
 .km-dark{background:#0d1730;border-radius:18px;padding:22px 24px;color:#fff}
-.km-lb{font-size:15.5px;font-weight:600;color:#5b6880}
+.km-lb{font-size:14px;font-weight:600;color:#5b6880}
 .km-dark .km-lb{color:#9aa8c8}
-.km-big{font-size:38px;font-weight:800;letter-spacing:-1.2px;margin-top:10px}
-.km-sub{font-size:14.5px;color:#79869e;margin-top:6px}
+.km-big{font-size:30px;font-weight:800;letter-spacing:-1px;margin-top:9px}
+.km-sub{font-size:13px;color:#79869e;margin-top:6px}
 .km-dark .km-sub{color:#7f8db0}
-.km-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:18px}
-@media (max-width:520px){.km-grid{grid-template-columns:1fr}}
-.km-name{font-size:18.5px;font-weight:800}
-.km-period{font-size:15px;color:#68758f;margin-top:3px}
-.km-state{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:700;padding:6px 13px;border-radius:20px;white-space:nowrap}
-.km-state .dot{width:9px;height:9px;border-radius:50%}
-.km-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:20px}
-.km-sl{font-size:13.5px;color:#79869e}
-.km-sv{font-size:19px;font-weight:800;margin-top:4px}
+/* Ads-manager style list: one scannable row per campaign, columns stay aligned
+   down the page instead of a card grid whose stat blocks jump around. */
+.km-list{display:flex;flex-direction:column;gap:9px}
+.km-row{position:relative;background:#fff;border:1px solid #e4e9f4;border-radius:14px;padding:14px 46px 14px 16px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.km-row-edit{position:absolute;top:12px;right:10px;display:flex;cursor:pointer;padding:7px;border-radius:8px;color:#4a5568}
+.km-row-edit:hover{background:#f2f5fb}
+.km-row-main{display:flex;align-items:center;gap:12px;flex:1 1 240px;min-width:0;max-width:420px}
+.km-row-info{flex:1;min-width:0}
+.km-row-top{display:flex;align-items:center;gap:9px;min-width:0}
+.km-name{font-size:15.5px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.km-period{font-size:12.5px;color:#68758f;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.km-state{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 11px;border-radius:20px;white-space:nowrap;flex:none}
+.km-state .dot{width:8px;height:8px;border-radius:50%}
+.km-row-stats{display:flex;gap:20px;flex:1 1 auto;flex-wrap:wrap}
+.km-row-stats>div{min-width:64px}
+.km-sl{font-size:12px;color:#79869e}
+.km-sv{font-size:15px;font-weight:800;margin-top:3px;white-space:nowrap}
+@media (max-width:760px){
+  .km-row{flex-direction:column;align-items:stretch;padding:13px 40px 13px 13px}
+  .km-row-main{max-width:none;flex:none}
+  .km-row-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;width:100%;margin-top:11px}
+  .km-row-stats>div{min-width:0}
+  .km-row-stats>div:last-child:nth-child(odd){grid-column:1/-1}
+}
 
 /* ── Laporan ── */
 .lp-bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
@@ -599,7 +614,7 @@ textarea.f-in{min-height:110px;resize:vertical;line-height:1.5}
   .tbl th{padding:12px 15px;font-size:11.5px}.tbl td{padding:12px 15px}.ld-name{font-size:14.5px}.ld-meta{font-size:12.5px}
   .ld-pk,.ld-ag{font-size:14px}.ld-pks,.ld-upd{font-size:12.5px}.ld-val{font-size:15px}
   .pill{font-size:12.5px;padding:6px 11px}.chip,.btn-o,.btn-b{font-size:13.5px;padding:10px 14px}
-  .fu-name{font-size:14.5px}.fu-meta,.fu-silent{font-size:13px}.tm-name,.km-name{font-size:16px}
+  .fu-name{font-size:14.5px}.fu-meta,.fu-silent{font-size:13px}.tm-name{font-size:16px}
   .pk-name{font-size:18px}.pk-desc{font-size:13.5px}.pk-price{font-size:23px}
 }
 .dash-filter{display:flex;flex-direction:column;align-items:flex-end;gap:8px;min-height:48px}
@@ -641,17 +656,12 @@ textarea.f-in{min-height:110px;resize:vertical;line-height:1.5}
   .content{padding:24px 28px 52px}
   .wrap,.wrap18{max-width:1680px;margin-left:auto;margin-right:auto}
   .km-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .km-stats{grid-template-columns:repeat(5,minmax(0,1fr))}
   .tbl th,.tbl td{padding-top:13px;padding-bottom:13px}
 }
-@media (min-width:1180px) and (max-width:1699px){.km-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (min-width:1700px){.km-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:1179px){.km-grid{grid-template-columns:1fr}}
 @media (min-width:1280px) and (max-width:1500px){
   .hd{padding-left:24px;padding-right:24px}
   .content{padding-left:24px;padding-right:24px}
   .km-big{font-size:33px}
-  .km-name{font-size:17px}
 }
 
 </style>
@@ -799,7 +809,8 @@ button,input,select,textarea{font-size:inherit}
   .kpi-row{margin-top:9px}.kpi-big{font-size:30px!important;letter-spacing:-1px}
   .kpi-big .j{font-size:18px!important}.kpi-mid{font-size:23px!important;letter-spacing:-.7px}
   .kpi-sub,.kpi-mlb{font-size:11.2px!important}.kpi-up{font-size:11px;padding:4px 7px;margin-bottom:2px}
-  .grid2,.grid3,.km-grid,.km-kpis,.tm-grid,.as-grid,.pk-grid,.st-grid{gap:14px!important}
+  .grid2,.grid3,.km-kpis,.tm-grid,.as-grid,.pk-grid,.st-grid{gap:14px!important}
+  .km-list{gap:9px!important}
   .dashboard-section-space{margin-top:14px!important}
   .dash-filter-clean{margin-bottom:14px!important;padding:13px 15px!important;border-radius:14px!important}
   .dash-filter-clean .dash-filter-title{font-size:12.5px!important;min-width:120px!important}
@@ -965,9 +976,8 @@ button,input,select,textarea{font-size:inherit}
   .fu-more{padding:12px!important;font-size:11.5px!important}
 
   /* Other page grids */
-  .km-kpis,.km-grid,.tm-grid,.as-grid,.pk-grid,.st-grid,.f-grid,.room-alloc-row{grid-template-columns:1fr!important;gap:10px!important}
-  .km-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.km-stats>div:last-child:nth-child(odd){grid-column:1/-1}
-  .km-name,.tm-name{font-size:13.5px!important}.km-period,.km-sl,.tm-sub{font-size:10.5px!important}.km-sv{font-size:14px!important}.km-state{font-size:10px!important;padding:5px 8px!important}
+  .km-kpis,.tm-grid,.as-grid,.pk-grid,.st-grid,.f-grid,.room-alloc-row{grid-template-columns:1fr!important;gap:10px!important}
+  .tm-name{font-size:13.5px!important}.tm-sub{font-size:10.5px!important}
   .pipe{gap:10px!important;padding-bottom:8px}.col{min-width:270px!important;width:270px!important}.col-tt{font-size:12px!important}.pc-name{font-size:11.5px!important}.pc-state,.pc-pk{font-size:9.8px!important}.pc-val{font-size:11px!important}
   .pk-name{font-size:15px!important}.pk-desc{font-size:11px!important}.pk-price{font-size:19px!important}
   .ng-hd{padding:12px!important}.ng-body{padding:3px 12px 13px!important}.ng-chip{font-size:10.5px!important;padding:7px 10px!important}
@@ -2217,7 +2227,7 @@ function renderKempen(){
   const chips = [['semua','Semua','#9aa5ba'],['Aktif','Aktif',C.green],['Tamat','Tamat','#9aa5ba']].map(ch =>
     `<div class="as-chip${f === ch[0] ? ' on' : ''}" onclick="setKempenFilter('${ch[0]}')"><span class="sq" style="background:${ch[2]}"></span>${ch[1]}</div>`).join('');
 
-  const cards = list.map(k => {
+  const rows = list.map(k => {
     const on = campAktif(k);
     const ksp = campSpendFor(k, c.mo, c.yr);
     const kl = fl.filter(l => normCampaignName(l.campaign) === normCampaignName(k.name));
@@ -2226,15 +2236,20 @@ function renderKempen(){
     const kcpl = kl.length ? Math.round(ksp / kl.length) : null;
     const kroas = ksp > 0 ? +(ks / ksp).toFixed(1) : null;
     const tempoh = (k.dateStart || '—') + ' → ' + (k.dateEnd || 'berterusan');
-    return `<div class="card pad" style="position:relative">
-      <div class="pk-edit" style="display:flex;position:absolute" title="Kemaskini kempen" onclick="editCampaign('${k._id}')">${I.pencil('#4a5568')}</div>
-      <div style="display:flex;align-items:flex-start;gap:13px;padding-right:46px">
-        <div class="kpi-ic" style="background:#e8f0ff">${I.megaB}</div>
-        <div style="flex:1;min-width:0"><div class="km-name">${esc(k.name)}</div><div class="km-period">${esc(k.platform || 'Meta Ads')} · ${esc(tempoh)}</div></div>
-        <div class="km-state" style="background:${on ? '#e7f6ec' : '#fdf0e0'};color:${on ? C.greenD : C.amberD}"><span class="dot" style="background:${on ? C.green : C.amber}"></span>${on ? 'Aktif' : 'Tamat'}</div>
+    return `<div class="km-row">
+      <div class="km-row-edit" title="Kemaskini kempen" onclick="editCampaign('${k._id}')">${I.pencil('#4a5568')}</div>
+      <div class="km-row-main">
+        <div class="kpi-ic" style="background:#e8f0ff;flex:none">${I.megaB}</div>
+        <div class="km-row-info">
+          <div class="km-row-top">
+            <span class="km-name" title="${esc(k.name)}">${esc(k.name)}</span>
+            <span class="km-state" style="background:${on ? '#e7f6ec' : '#fdf0e0'};color:${on ? C.greenD : C.amberD}"><span class="dot" style="background:${on ? C.green : C.amber}"></span>${on ? 'Aktif' : 'Tamat'}</span>
+          </div>
+          <div class="km-period" title="${esc(k.platform || 'Meta Ads')} · ${esc(tempoh)}">${esc(k.platform || 'Meta Ads')} · ${esc(tempoh)}</div>
+        </div>
       </div>
-      <div class="km-stats">
-        <div><div class="km-sl">Spend sebenar</div><div class="km-sv">RM ${nf(ksp)}</div></div>
+      <div class="km-row-stats">
+        <div><div class="km-sl">Spend</div><div class="km-sv">RM ${nf(ksp)}</div></div>
         <div><div class="km-sl">Leads</div><div class="km-sv">${kl.length}</div></div>
         <div><div class="km-sl">Close</div><div class="km-sv">${kc.length}</div></div>
         <div><div class="km-sl">CPL</div><div class="km-sv">${kcpl!==null ? 'RM ' + nf(kcpl) : '—'}</div></div>
@@ -2252,14 +2267,14 @@ function renderKempen(){
       <div class="card pad"><div class="km-lb">ROAS Keseluruhan</div><div class="km-big" style="color:${C.green}">${m.roas!==null?m.roas+'×':'—'}</div><div class="km-sub">${spendInfo.available?(spend>0?fmtK(m.sales)+' pulangan':'Spend sebenar RM 0'):'Spend sebenar belum direkod'}</div></div>
     </div>
     <div class="card"><div class="as-fhd" style="border-bottom:none">
-      <div style="flex:1;min-width:220px"><div class="ct">Senarai Kempen</div><div class="cs">Satu kad bagi setiap nama kempen unik · data bulan semasa</div></div>
+      <div style="flex:1;min-width:220px"><div class="ct">Senarai Kempen</div><div class="cs">Satu baris bagi setiap nama kempen unik · data bulan semasa</div></div>
       <span class="data-actual">Data actual sahaja</span>
       ${duplicateCount ? `<span class="km-dup-note">${duplicateCount} rekod duplikat disorok</span>` : ''}
       ${duplicateCount && isSuper() ? `<button class="btn-ghost" onclick="cleanupDuplicateCampaigns()">Bersihkan Duplikat</button>` : ''}
       ${chips}
       ${isMgr() ? `<button class="btn-b" onclick="openAddCampaign()">${I.plusW}Tambah Kempen</button>` : ''}
     </div></div>
-    ${list.length ? `<div class="km-grid">${cards}</div>`
+    ${list.length ? `<div class="km-list">${rows}</div>`
       : '<div class="card empty"><div class="empty-t">Tiada kempen ditemui</div><div class="empty-s">Tambah kempen pertama anda dengan butang di atas</div></div>'}
   </div>`;
 }
