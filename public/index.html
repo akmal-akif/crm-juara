@@ -4023,40 +4023,23 @@ else init();
 
 
 <style>
-/* ===== v14 team enhancement fix ===== */
+/* ===== v15 team cleanup: one ranked list, no podium/list duplication ===== */
 .team-hero{background:linear-gradient(135deg,#eff5ff 0%,#ffffff 55%,#f7fbff 100%);border:1px solid #dfe9ff;border-radius:24px;padding:22px 22px 18px;box-shadow:0 10px 32px rgba(37,99,235,.06)}
-.team-hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap}
 .team-hero-title{font-size:24px;font-weight:900;color:#0f172a;letter-spacing:-.02em}
 .team-hero-sub{font-size:14px;color:#64748b;margin-top:4px}
-.team-pills{display:flex;flex-wrap:wrap;gap:10px}
-.hero-pill{padding:9px 12px;border-radius:999px;background:#fff;border:1px solid #e6ecfb;font-size:13px;font-weight:800;color:#334155}
+.team-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 .team-summary-v14{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:16px}
 .team-summary-v14 .box{background:#fff;border:1px solid #e7ecf5;border-radius:18px;padding:16px 18px}
 .team-summary-v14 .lb{font-size:13px;color:#64748b;font-weight:700}
 .team-summary-v14 .val{font-size:24px;font-weight:900;color:#0f172a;letter-spacing:-.02em;margin-top:6px}
 .team-stage{display:grid;gap:18px;margin-top:18px}
-.team-podium-v14{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:18px;align-items:end}
-.podium-v14{position:relative;border-radius:24px;padding:20px;background:#fff;border:1px solid #e8edf6;box-shadow:0 10px 26px rgba(15,23,42,.05)}
-.podium-v14.first{background:linear-gradient(180deg,#fff9e8 0%,#ffffff 100%);border-color:#fbd77b;transform:translateY(-10px)}
-.podium-v14.second{background:linear-gradient(180deg,#f8fbff 0%,#ffffff 100%)}
-.podium-v14.third{background:linear-gradient(180deg,#fff5eb 0%,#ffffff 100%);border-color:#fed7aa}
-.podium-v14 .rank{position:absolute;top:16px;right:16px;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff}
-.podium-v14.first .rank{background:#f59e0b}.podium-v14.second .rank{background:#94a3b8}.podium-v14.third .rank{background:#b45309}
-.podium-v14 .crown{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:30px}
-.podium-v14 .head{display:flex;gap:12px;align-items:center;padding-right:46px}
-.podium-v14 .name{font-size:18px;font-weight:900;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.podium-v14 .sub{font-size:13.5px;color:#64748b;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.podium-v14 .money{font-size:30px;font-weight:900;color:#0f172a;letter-spacing:-.03em;margin-top:16px}
-.podium-v14 .tag{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:7px 11px;border-radius:999px;font-size:12px;font-weight:800;background:#eef4ff;color:#1d4ed8}
-.podium-v14.first .tag{background:#fff2c7;color:#a16207}.podium-v14.second .tag{background:#eef2f7;color:#475569}.podium-v14.third .tag{background:#ffedd5;color:#9a3412}
-.podium-v14 .mini{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:15px}
-.podium-v14 .mini .m{background:#fff;border:1px solid #eef2f8;border-radius:14px;padding:10px 8px;text-align:center}
-.podium-v14 .mini .m .v{font-size:18px;font-weight:900;color:#0f172a}.podium-v14 .mini .m .l{font-size:12px;color:#64748b;margin-top:2px}
-.podium-v14 .prog{margin-top:15px}.podium-v14 .prog .row{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:#475569;font-weight:700;margin-bottom:6px}
-.podium-v14 .prog .bar{height:10px;border-radius:999px;background:#e8edf5;overflow:hidden}.podium-v14 .prog .bar>div{height:100%;border-radius:999px;background:linear-gradient(90deg,#2563eb,#60a5fa)}
 .team-grid-v14{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
 .agent-card-v14{position:relative;background:#fff;border:1px solid #e7ecf5;border-radius:22px;padding:18px;box-shadow:0 8px 22px rgba(15,23,42,.04)}
+.agent-card-v14.rank-1{border-color:#fbd77b}
 .agent-card-v14 .num{position:absolute;top:14px;right:14px;min-width:46px;height:40px;padding:0 10px;border-radius:999px;background:#eff4ff;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900}
+.agent-card-v14.rank-1 .num{background:#f59e0b;color:#fff}
+.agent-card-v14.rank-2 .num{background:#94a3b8;color:#fff}
+.agent-card-v14.rank-3 .num{background:#b45309;color:#fff}
 .agent-card-v14 .top{display:flex;align-items:flex-start;gap:12px;padding-right:54px}
 .agent-card-v14 .name{font-size:17px;font-weight:900;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .agent-card-v14 .sub{font-size:13.5px;color:#64748b;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -4064,12 +4047,12 @@ else init();
 .agent-card-v14 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
 .agent-card-v14 .stat{background:#f8fafc;border-radius:14px;padding:10px 8px;text-align:center}
 .agent-card-v14 .stat .v{font-size:18px;font-weight:900;color:#0f172a}.agent-card-v14 .stat .l{font-size:12px;color:#64748b;margin-top:2px}
-.agent-card-v14 .bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-top:14px}
-.agent-card-v14 .bottom .lb{font-size:13px;color:#64748b;font-weight:700}.agent-card-v14 .bottom .val{font-size:23px;font-weight:900;color:#0f172a}
+.agent-card-v14 .bottom{margin-top:14px}
+.agent-card-v14 .bottom .lb{font-size:13px;color:#64748b;font-weight:700}.agent-card-v14 .bottom .val{font-size:23px;font-weight:900;color:#0f172a;margin-top:2px}
 .agent-card-v14 .progress{margin-top:10px}.agent-card-v14 .progress .row{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:#64748b;font-weight:700;margin-bottom:6px}
 .agent-card-v14 .progress .bar{height:10px;border-radius:999px;background:#edf2f7;overflow:hidden}.agent-card-v14 .progress .bar>div{height:100%;border-radius:999px;background:linear-gradient(90deg,#2563eb,#60a5fa)}
-@media (max-width:1100px){.team-summary-v14{grid-template-columns:repeat(2,minmax(0,1fr))}.team-podium-v14{grid-template-columns:1fr}.podium-v14.first{transform:none}}
-@media (max-width:720px){.team-summary-v14{grid-template-columns:1fr}.podium-v14 .mini,.agent-card-v14 .stats{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:1100px){.team-summary-v14{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:720px){.team-summary-v14{grid-template-columns:1fr}.agent-card-v14 .stats{grid-template-columns:repeat(2,1fr)}}
 </style>
 <script>
 (function(){
@@ -4102,32 +4085,13 @@ else init();
     const chips = [''].concat(zons).map(z => `<div class="as-chip${zonF === z ? ' on' : ''}" onclick="setTeamZon('${z}')"><span class="sq" style="background:${z ? C.blue : '#9aa5ba'}"></span>${z || 'Semua zon'}</div>`).join('');
     const totals = ranked.reduce((acc,x)=>{ acc.leads+=x.st.leads; acc.closed+=x.st.closed; acc.sales+=x.st.sales; acc.pax+=x.st.pax; return acc; }, {leads:0,closed:0,sales:0,pax:0});
     const avgClose = ranked.length ? Math.round(ranked.reduce((s,x)=>s+x.rate,0)/ranked.length) : 0;
-    const top3 = ranked.slice(0,3);
-    const order = [1,0,2].filter(i => top3[i]);
-    const podium = order.map(i => {
-      const x = top3[i];
-      const realRank = ranked.findIndex(r => r.name === x.name) + 1;
-      const cls = realRank===1 ? 'first' : (realRank===2 ? 'second' : 'third');
-      return `<div class="podium-v14 ${cls}">${realRank===1?'<div class="crown">👑</div>':''}
-        <div class="rank">${realRank}</div>
-        <div class="head">${agentAvatar(x.name, avOf(x.name), 62)}
-          <div style="min-width:0;flex:1"><div class="name">${esc(x.name)}</div><div class="sub">${esc(x.u.cawangan || '—')}</div></div>
-        </div>
-        <div class="tag">#${realRank} · ${teamTone(x.pc)}</div>
-        <div class="money">${actualRM2(x.st.sales)}</div>
-        <div class="mini">
-          <div class="m"><div class="v">${actualNum2(x.st.leads)}</div><div class="l">Leads</div></div>
-          <div class="m"><div class="v">${actualNum2(x.st.closed)}</div><div class="l">Close</div></div>
-          <div class="m"><div class="v">${actualNum2(x.st.pax)}</div><div class="l">Pax</div></div>
-          <div class="m"><div class="v">${x.rate}%</div><div class="l">Kadar</div></div>
-        </div>
-        <div class="prog"><div class="row"><span>Jualan vs sasaran</span><span>${actualRM2(x.st.sales)} / ${actualRM2(Math.round(perTgt))}</span></div><div class="bar"><div style="width:${Math.min(100,x.pc)}%"></div></div></div>
-      </div>`;
-    }).join('');
+    const rankTier = rank => rank===1?' rank-1':(rank===2?' rank-2':(rank===3?' rank-3':''));
 
-    const cards = ranked.map((x,idx) => `
-      <div class="agent-card-v14">
-        <div class="num">#${idx+1}</div>
+    const cards = ranked.map((x,idx) => {
+      const rank = idx+1;
+      return `
+      <div class="agent-card-v14${rankTier(rank)}">
+        <div class="num">#${rank}</div>
         <div class="top">${agentAvatar(x.name, avOf(x.name), 54)}
           <div style="min-width:0;flex:1"><div class="name">${esc(x.name)}</div><div class="sub">${esc(x.u.cawangan || '—')}</div><div class="tag">${teamTone(x.pc)}</div></div>
         </div>
@@ -4137,17 +4101,16 @@ else init();
           <div class="stat"><div class="v">${actualNum2(x.st.pax)}</div><div class="l">Pax</div></div>
           <div class="stat"><div class="v">${x.rate}%</div><div class="l">Kadar</div></div>
         </div>
-        <div class="bottom"><div><div class="lb">Jualan semasa</div><div class="val">${actualRM2(x.st.sales)}</div></div><div style="text-align:right"><div class="lb">Sasaran agent</div><div class="lb" style="font-size:14px;color:#0f172a">${actualRM2(Math.round(perTgt))}</div></div></div>
+        <div class="bottom"><div class="lb">Jualan semasa</div><div class="val">${actualRM2(x.st.sales)}</div></div>
         <div class="progress"><div class="row"><span>Progress ke sasaran</span><span>${x.pc}%</span></div><div class="bar"><div style="width:${Math.min(100,x.pc)}%"></div></div></div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
 
     $('pg-team').innerHTML = `<div class="wrap18">
       <div class="team-hero">
-        <div class="team-hero-top">
-          <div><div class="team-hero-title">Prestasi Pasukan — ${MON[c.mo]} ${c.yr}</div><div class="team-hero-sub">Ranking live ikut jualan sebenar untuk hidupkan persaingan antara agent.</div></div>
-          <div>${chips}</div>
-        </div>
-        <div class="team-pills"><div class="hero-pill">${ranked.length} agent dipaparkan</div><div class="hero-pill">Sasaran seorang: ${actualRM2(Math.round(perTgt))}</div><div class="hero-pill">Jumlah pax: ${actualNum2(totals.pax)}</div></div>
+        <div class="team-hero-title">Prestasi Pasukan — ${MON[c.mo]} ${c.yr}</div>
+        <div class="team-hero-sub">Ranking live ikut jualan sebenar · ${ranked.length} agent · Sasaran ${actualRM2(Math.round(perTgt))} seorang · ${actualNum2(totals.pax)} pax bulan ini</div>
+        <div class="team-pills">${chips}</div>
         <div class="team-summary-v14">
           <div class="box"><div class="lb">Jumlah Jualan Pasukan</div><div class="val">${actualRM2(totals.sales)}</div></div>
           <div class="box"><div class="lb">Jumlah Leads</div><div class="val">${actualNum2(totals.leads)}</div></div>
@@ -4156,7 +4119,6 @@ else init();
         </div>
       </div>
       <div class="team-stage">
-        ${top3.length ? `<div class="team-podium-v14">${podium}</div>` : ''}
         ${ranked.length ? `<div class="team-grid-v14">${cards}</div>` : '<div class="card empty"><div class="empty-t">Tiada agent ditemui</div><div class="empty-s">Cuba tukar filter zon anda</div></div>'}
       </div>
     </div>`;
