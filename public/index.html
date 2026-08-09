@@ -135,8 +135,6 @@ body.rail .s-chev{transform:rotate(180deg)}
 .kpi-up{display:flex;align-items:center;gap:4px;background:#e7f6ec;color:#15803d;font-size:14.5px;font-weight:700;padding:5px 10px;border-radius:20px;margin-bottom:6px}
 .kpi-dn{background:#fdeaea;color:#b91c1c}
 .kpi-sub{font-size:14.5px;color:#79869e;margin-top:8px}
-.kpi-mid{font-size:24px;font-weight:800;letter-spacing:-.7px;line-height:1;white-space:nowrap}
-.kpi-mlb{font-size:13px;color:#79869e;margin-top:5px}
 
 .grid2{display:grid;grid-template-columns:1.45fr 1fr;gap:18px;align-items:start}
 @media (max-width:980px){.grid2{grid-template-columns:1fr}}
@@ -605,7 +603,7 @@ textarea.f-in{min-height:110px;resize:vertical;line-height:1.5}
   .content{padding:22px 24px 44px}.wrap,.wrap18{gap:16px}.card{border-radius:14px}.pad{padding:17px 19px}
   .ct{font-size:17px}.cs{font-size:13px}.kpis{gap:14px;grid-template-columns:repeat(4,minmax(190px,1fr))}
   .kpi-ic{width:39px;height:39px}.kpi-lb{font-size:13.5px}.kpi-big{font-size:34px}.kpi-big .j{font-size:21px}
-  .kpi-mid{font-size:22px}.kpi-sub,.kpi-mlb{font-size:12.5px}.kpi-row{margin-top:11px}
+  .kpi-sub{font-size:12.5px}.kpi-row{margin-top:11px}
   .tbl th{padding:12px 15px;font-size:11.5px}.tbl td{padding:12px 15px}.ld-name{font-size:14.5px}.ld-meta{font-size:12.5px}
   .ld-pk,.ld-ag{font-size:14px}.ld-pks,.ld-upd{font-size:12.5px}.ld-val{font-size:15px}
   .pill{font-size:12.5px;padding:6px 11px}.chip,.btn-o,.btn-b{font-size:13.5px;padding:10px 14px}
@@ -802,8 +800,8 @@ button,input,select,textarea{font-size:inherit}
   .kpi-ic{width:36px;height:36px;border-radius:10px}.kpi-ic svg{width:20px;height:20px}
   .kpi-hd{gap:9px}.kpi-lb{font-size:12.2px!important}
   .kpi-row{margin-top:9px}.kpi-big{font-size:30px!important;letter-spacing:-1px}
-  .kpi-big .j{font-size:18px!important}.kpi-mid{font-size:23px!important;letter-spacing:-.7px}
-  .kpi-sub,.kpi-mlb{font-size:11.2px!important}.kpi-up{font-size:11px;padding:4px 7px;margin-bottom:2px}
+  .kpi-big .j{font-size:18px!important}
+  .kpi-sub{font-size:11.2px!important}.kpi-up{font-size:11px;padding:4px 7px;margin-bottom:2px}
   .grid2,.grid3,.km-kpis,.tm-grid,.as-grid,.pk-grid,.st-grid{gap:14px!important}
   .km-list{gap:9px!important}
   .dashboard-section-space{margin-top:14px!important}
@@ -844,7 +842,7 @@ button,input,select,textarea{font-size:inherit}
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
   .grid3{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   .grid3>.card:last-child:nth-child(odd){grid-column:1/-1}
-  .kpi-big{font-size:31px!important}.kpi-mid{font-size:24px!important}
+  .kpi-big{font-size:31px!important}
   .ct{font-size:15px}.cs{font-size:12px}
   .tbl th,.tbl td{padding:10px 11px!important}
 }
@@ -928,7 +926,7 @@ button,input,select,textarea{font-size:inherit}
   .kpi-hd{gap:8px;align-items:center}.kpi-ic{width:32px;height:32px;border-radius:9px}.kpi-ic svg{width:18px;height:18px}
   .kpi-lb{font-size:10.8px!important;line-height:1.25}.kpi-row{margin-top:9px!important;gap:7px}
   .kpi-big{font-size:25px!important;letter-spacing:-.8px!important}.kpi-big .j{font-size:15px!important}
-  .kpi-mid{font-size:20px!important;letter-spacing:-.5px!important}.kpi-sub,.kpi-mlb{font-size:9.8px!important;line-height:1.35}
+  .kpi-sub{font-size:9.8px!important;line-height:1.35}
   .kpi-up{font-size:9.5px!important;padding:3px 6px!important;margin-bottom:1px!important}
   .dashboard-section-space{margin-top:12px!important}
   .grid2,.grid3{grid-template-columns:1fr!important;gap:12px!important}
@@ -999,7 +997,7 @@ button,input,select,textarea{font-size:inherit}
   .hd-sub{max-width:190px}
   .kpis{grid-template-columns:1fr 1fr!important;gap:8px!important}
   .kpis>.card{padding:10px!important}
-  .kpi-big{font-size:23px!important}.kpi-mid{font-size:18px!important}
+  .kpi-big{font-size:23px!important}
   .kpi-row{gap:8px!important}
   .dash-filter-clean .dash-range-pill{width:100%;justify-content:center}
   .fu-row{grid-template-columns:34px minmax(0,1fr) auto!important;padding-inline:10px!important}
@@ -1910,8 +1908,6 @@ function renderDash(){
       ${!m.spendInfo.available?`<div class="dash-warning">Kos iklan, CPL dan ROAS hanya dipaparkan bila sistem ada <b>rekod spend sebenar</b> untuk tempoh tersebut. Untuk filter seperti Semalam, 3 Hari, 7 Hari atau 30 Hari, sistem perlukan log spend harian mengikut tarikh. Jika tiada log, sistem akan paparkan “—” supaya tiada data anggaran.</div>`:''}
     </div>`;
 
-    const spendShown=m.spendInfo.available?fmtK(m.spend):'—';
-    const spendSub=m.spendInfo.available?`${esc(m.spendInfo.source)} · ${spendShown}`:esc(m.spendInfo.source);
     const kpis=`
     <div class="kpis">
       <div class="card pad">
@@ -1931,12 +1927,8 @@ function renderDash(){
       </div>
       <div class="card pad">
         <div class="kpi-hd"><div class="kpi-ic" style="background:#fdf0e0">${I.arrowUR(C.amber)}</div><div class="kpi-lb">Kos Iklan, CPL &amp; ROAS</div></div>
-        <div class="kpi-row" style="gap:14px 22px;flex-wrap:wrap">
-          <div><div class="kpi-mid">${m.spendInfo.available?'RM '+nf(m.spend):'—'}</div><div class="kpi-mlb">Spend</div></div>
-          <div><div class="kpi-mid">${m.cpl==null?'—':'RM '+nf(m.cpl)}</div><div class="kpi-mlb">CPL</div></div>
-          <div><div class="kpi-mid" style="color:#16a34a">${m.roas==null?'—':m.roas+'×'}</div><div class="kpi-mlb">ROAS</div></div>
-        </div>
-        <div class="kpi-sub">${spendSub}</div>
+        <div class="kpi-row"><div class="kpi-big" style="color:${m.roas!==null&&m.roas>=4?C.green:'#0f172a'}">${m.roas==null?'—':m.roas+'×'}</div></div>
+        <div class="kpi-sub">Spend ${m.spendInfo.available?'RM '+nf(m.spend):'—'} · CPL ${m.cpl==null?'—':'RM '+nf(m.cpl)}</div>
       </div>
     </div>`;
 
