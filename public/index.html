@@ -160,6 +160,7 @@ body.rail .s-chev{transform:rotate(180deg)}
 .av38{width:38px;height:38px;font-size:16px}
 .av34{width:34px;height:34px;font-size:15px}
 .av58{width:58px;height:58px;font-size:23px}
+.av54{width:54px;height:54px;font-size:21px}
 
 .wa-btn{display:flex;align-items:center;gap:7px;background:#16a34a;color:#fff;font-size:15.5px;font-weight:700;padding:11px 16px;border-radius:11px;cursor:pointer;border:none}
 .wa-btn:hover{background:#15803d}
@@ -268,23 +269,25 @@ table.tbl{width:100%;border-collapse:collapse}
 .empty-s{font-size:15px;color:#8a95ab;margin-top:6px}
 
 /* ── Pipeline ── */
-.pipe{display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;align-items:flex-start}
-.col{width:272px;flex:none;background:#f7f9fd;border:1px solid #e4e9f4;border-radius:18px;padding:14px;transition:border-color .12s,background .12s}
+.pipe-filter{margin-bottom:14px}
+select.pipe-agent-sel{width:auto;min-width:220px;max-width:280px}
+.pipe{display:flex;gap:10px;overflow-x:auto;padding-bottom:12px;align-items:flex-start}
+.col{width:228px;flex:none;background:#f7f9fd;border:1px solid #e4e9f4;border-radius:16px;padding:11px;transition:border-color .12s,background .12s}
 .col.over{border-color:#2563eb;background:#f0f6ff}
-.col-hd{display:flex;align-items:center;gap:10px;padding:0 4px 14px}
-.col-dot{width:12px;height:12px;border-radius:4px}
-.col-tt{flex:1;font-size:18px;font-weight:800}
-.col-ct{font-size:15px;font-weight:700;background:#e6ebf6;color:#4a5568;padding:4px 11px;border-radius:20px}
-.col-total{font-size:15px;color:#68758f;padding:0 4px 14px}
-.col-cards{display:flex;flex-direction:column;gap:11px}
-.pcard{background:#fff;border:1px solid #e4e9f4;border-radius:14px;padding:15px;box-shadow:0 1px 3px rgba(15,23,42,.05);cursor:grab}
+.col-hd{display:flex;align-items:center;gap:8px;padding:0 3px 11px}
+.col-dot{width:11px;height:11px;border-radius:4px}
+.col-tt{flex:1;font-size:16px;font-weight:800}
+.col-ct{font-size:13.5px;font-weight:700;background:#e6ebf6;color:#4a5568;padding:3px 10px;border-radius:20px}
+.col-total{font-size:15px;color:#68758f;padding:0 3px 11px}
+.col-cards{display:flex;flex-direction:column;gap:8px}
+.pcard{background:#fff;border:1px solid #e4e9f4;border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(15,23,42,.05);cursor:grab}
 .pcard:active{cursor:grabbing}
 .pcard.drag{opacity:.4}
-.pc-name{font-size:16.5px;font-weight:700;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pc-state{font-size:14.5px;color:#79869e;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pc-ft{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:13px;padding-top:13px;border-top:1px solid #f0f3f9}
-.pc-pk{font-size:15px;color:#68758f;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pc-val{font-size:16.5px;font-weight:800;white-space:nowrap;flex:none}
+.pc-name{font-size:17px;font-weight:700;text-transform:uppercase;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-state{font-size:15px;color:#68758f;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-ft{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #f0f3f9}
+.pc-pk{font-size:16.5px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-val{font-size:17.5px;font-weight:800;white-space:nowrap;flex:none}
 .col-more{margin-top:11px;padding:12px;text-align:center;font-size:15px;font-weight:700;color:#2563eb;cursor:pointer;border-radius:11px}
 .col-more:hover{background:#eef4ff}
 
@@ -313,12 +316,12 @@ table.tbl{width:100%;border-collapse:collapse}
 .as-chip:hover{background:#eef2fa}
 .as-chip.on{border-color:#2563eb;background:#f0f6ff;color:#1d4ed8}
 .as-chip .sq{width:10px;height:10px;border-radius:3px}
-.js-name{font-size:17px;font-weight:700;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.js-name{font-size:17px;font-weight:700;text-transform:uppercase;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .js-meta{font-size:15px;color:#68758f;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .js-pk{font-size:16.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .js-dep{display:flex;align-items:center;gap:8px;font-size:15px;color:#68758f;margin-top:3px;white-space:nowrap}
-.js-cd{font-size:14px;font-weight:700;white-space:nowrap}
-.dpill{display:inline-block;font-size:14.5px;font-weight:700;padding:7px 12px;border-radius:20px;white-space:nowrap}
+.js-cd{font-size:14.5px;font-weight:600;text-transform:uppercase;white-space:nowrap}
+.dpill{display:inline-block;font-size:15px;font-weight:700;padding:7px 12px;border-radius:20px;white-space:nowrap}
 .pay-row{display:flex;justify-content:space-between;font-size:14.5px;margin-bottom:6px}
 .pay-paid{font-weight:700}
 .pay-tot{color:#8a95ab}
@@ -424,12 +427,11 @@ table.tbl{width:100%;border-collapse:collapse}
 .rc-clear{display:flex;align-items:center;gap:9px;background:#fff;border:1.5px solid #e8d3ae;color:#b45309;border-radius:12px;padding:12px 18px;font-size:16px;font-weight:700;cursor:pointer}
 .rc-clear:hover{background:#fdf3e3}
 .rc-item{background:#fff;border:1px solid #e4e9f4;border-radius:16px;padding:18px 22px;display:flex;flex-wrap:wrap;align-items:center;gap:14px}
-.rc-name{font-size:17px;font-weight:700;text-transform:uppercase;color:#5b6880}
+.rc-name{font-size:17px;font-weight:700;text-transform:uppercase;letter-spacing:.2px;color:#5b6880}
 .rc-meta{font-size:15px;color:#8a95ab;margin-top:3px}
 .rc-by{font-size:15px;color:#68758f}
 .rc-reason{font-size:14.5px;color:#8a95ab;margin-top:3px}
-.rc-left{font-size:15.5px;font-weight:700;color:#b45309}
-.rc-when{font-size:14px;color:#8a95ab;margin-top:2px}
+.rc-when{font-size:14px;color:#8a95ab;margin-top:6px}
 .rc-restore{display:flex;align-items:center;gap:8px;background:#e8f0ff;color:#1d4ed8;font-size:15.5px;font-weight:700;padding:11px 16px;border-radius:11px;cursor:pointer;border:none}
 .rc-restore:hover{background:#d7e5ff}
 .ic44{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;flex:none}
@@ -1665,6 +1667,11 @@ function pickAgent(sel, negeri){
 }
 function pkgByName(n){ return allPkgs.filter(p => p.name === n)[0] || null; }
 function pkgPrice(n){ const p = pkgByName(n); return p ? (parseFloat(p.price)||0) : 0; }
+function pipeEstVal(l){
+  const real = leadVal(l); if (real) return real;
+  const base = pkgPrice(l.pakej); if (!base) return 0;
+  return base * leadPax(l) + (l.cutiSekolah ? CS_AMOUNT : 0);
+}
 function bilikPrice(pkg, kod){
   const p = pkgByName(pkg);
   if (p && p.bilik && p.bilik[kod]) return parseFloat(p.bilik[kod]) || 0;
@@ -2094,23 +2101,23 @@ function renderPipeline(){
   const p = S.pipeline;
   const base = visLeads().filter(l => (!p.agent || l.agent === p.agent) && cocok(l, S.q));
   const agenSel = (isAgent()) ? '' : `
-    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:6px">
-      <div class="as-chip${!p.agent ? ' on' : ''}" onclick="setPipeAgen('')"><span class="sq" style="background:#9aa5ba"></span>Semua agent <span style="opacity:.6">${base.length}</span></div>
-      ${ALL_AGENTS.map(n => `<div class="as-chip${p.agent === n ? ' on' : ''}" onclick="setPipeAgen('${esc(n)}')"><span class="sq" style="background:${avOf(n)}"></span>${esc(n)}</div>`).join('')}
+    <div class="pipe-filter">
+      <select class="f-in pipe-agent-sel" onchange="setPipeAgen(this.value)">
+        <option value=""${!p.agent ? ' selected' : ''}>Semua agent (${base.length})</option>
+        ${ALL_AGENTS.map(n => `<option value="${esc(n)}"${p.agent === n ? ' selected' : ''}>${esc(n)}</option>`).join('')}
+      </select>
     </div>`;
   const kols = STATUSES.map(s => {
     const ls = base.filter(l => l.status === s);
-    const tot = ls.reduce((a,l) => a + leadVal(l), 0);
+    const tot = ls.reduce((a,l) => a + pipeEstVal(l), 0);
     const lbl = s === 'Closed' ? fmtK(tot) + ' jualan' : (s === 'Lost' ? fmtK(tot) + ' terlepas' : fmtK(tot) + ' berpotensi');
     const exp = p.expand[s];
     const show = exp ? ls : ls.slice(0, 8);
     const cards = show.map(l => `
       <div class="pcard" draggable="true" ondragstart="dragStart(event,'${l._id}')" ondragend="dragEnd(event)" onclick="editLead('${l._id}')">
-        <div style="display:flex;align-items:center;gap:10px">
-          ${avatar(l.name, avOf(l.agent), 34)}
-          <div style="flex:1;min-width:0"><div class="pc-name">${esc(l.name || '—')}</div><div class="pc-state">${esc(l.negeri || '—')} · ${esc(l.agent || '—')}</div></div>
-        </div>
-        <div class="pc-ft"><div class="pc-pk">${esc((l.pakej || '—').replace('Pakej ','')) } · ${leadPax(l)} pax</div><div class="pc-val">${leadVal(l) ? fmtRM(leadVal(l)) : '—'}</div></div>
+        <div class="pc-name">${esc(l.name || '—')}</div>
+        <div class="pc-state">${esc(l.agent || '—')}</div>
+        <div class="pc-ft"><div class="pc-pk">${esc((l.pakej || '—').replace('Pakej ','')) }</div><div class="pc-val">${pipeEstVal(l) ? fmtRM(pipeEstVal(l)) : '—'}</div></div>
       </div>`).join('');
     return `
     <div class="col" id="col-${s.replace(' ','_')}" ondragover="dragOver(event,'${s}')" ondragleave="dragLeave('${s}')" ondrop="dropCol(event,'${s}')">
@@ -2495,7 +2502,7 @@ function renderRecycle(){
         <div class="rc-meta">${esc(r.phone || '—')} · ${esc(r.negeri || '—')} · ${esc(r.pakej || '—')} ${leadPax(r)} pax</div></div>
       </div>
       <div style="min-width:190px"><div class="rc-by">Dipadam oleh <b style="color:#3c4a66">${esc(r.deletedBy || '—')}</b></div><div class="rc-reason">${esc(r.deletedReason || '')}</div></div>
-      <div style="text-align:right;min-width:100px"><div class="rc-left">${esc(r.status || '')}</div><div class="rc-when">${relTime(r.deletedAt)}</div></div>
+      <div style="text-align:right;min-width:100px">${pillHTML(r.status)}<div class="rc-when">${relTime(r.deletedAt)}</div></div>
       ${isMgr() ? `<button class="rc-restore" onclick="restoreLead('${r._id}')">${I.undo}Pulihkan</button>` : ''}
       ${isSuper() ? `<button class="ic44 ic-rd" title="Padam kekal" onclick="purgeAsk('${r._id}')">${I.xR}</button>` : ''}
     </div>`).join('');
