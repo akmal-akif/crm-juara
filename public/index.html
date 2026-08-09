@@ -129,15 +129,14 @@ body.rail .s-chev{transform:rotate(180deg)}
 .kpi-hd{display:flex;align-items:center;gap:12px}
 .kpi-ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center}
 .kpi-lb{font-size:16px;font-weight:600;color:#5b6880}
-.kpi-row{display:flex;align-items:flex-end;gap:12px;margin-top:14px}
+.kpi-row{display:flex;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-top:14px}
 .kpi-big{font-size:44px;font-weight:800;letter-spacing:-1.6px;line-height:1}
 .kpi-big .j{font-size:26px}
 .kpi-up{display:flex;align-items:center;gap:4px;background:#e7f6ec;color:#15803d;font-size:14.5px;font-weight:700;padding:5px 10px;border-radius:20px;margin-bottom:6px}
 .kpi-dn{background:#fdeaea;color:#b91c1c}
 .kpi-sub{font-size:14.5px;color:#79869e;margin-top:8px}
-.kpi-mid{font-size:36px;font-weight:800;letter-spacing:-1.2px;line-height:1}
-.kpi-mlb{font-size:13.5px;color:#79869e;margin-top:5px}
-.kpi-div{width:1px;height:44px;background:#e4e9f4}
+.kpi-mid{font-size:24px;font-weight:800;letter-spacing:-.7px;line-height:1;white-space:nowrap}
+.kpi-mlb{font-size:13px;color:#79869e;margin-top:5px}
 
 .grid2{display:grid;grid-template-columns:1.45fr 1fr;gap:18px;align-items:start}
 @media (max-width:980px){.grid2{grid-template-columns:1fr}}
@@ -170,12 +169,8 @@ body.rail .s-chev{transform:rotate(180deg)}
 .sq-btn:hover{background:#f2f5fb}
 
 /* Sasaran */
-.tg-lb{font-size:16.5px;font-weight:600;color:#3c4a66}
-.tg-val{font-size:16.5px;font-weight:700}
-.tg-goal{color:#9aa5ba;font-weight:600}
 .tg-bar{height:14px;border-radius:8px;background:#eef1f8;overflow:hidden}
 .tg-bar>div{height:100%;border-radius:8px;transition:width .4s ease}
-.tg-note{font-size:14px;color:#8a95ab;margin-top:7px}
 
 /* Trend + status */
 .lg{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:#3c4a66}
@@ -610,7 +605,7 @@ textarea.f-in{min-height:110px;resize:vertical;line-height:1.5}
   .content{padding:22px 24px 44px}.wrap,.wrap18{gap:16px}.card{border-radius:14px}.pad{padding:17px 19px}
   .ct{font-size:17px}.cs{font-size:13px}.kpis{gap:14px;grid-template-columns:repeat(4,minmax(190px,1fr))}
   .kpi-ic{width:39px;height:39px}.kpi-lb{font-size:13.5px}.kpi-big{font-size:34px}.kpi-big .j{font-size:21px}
-  .kpi-mid{font-size:28px}.kpi-sub,.kpi-mlb{font-size:12.5px}.kpi-row{margin-top:11px}
+  .kpi-mid{font-size:22px}.kpi-sub,.kpi-mlb{font-size:12.5px}.kpi-row{margin-top:11px}
   .tbl th{padding:12px 15px;font-size:11.5px}.tbl td{padding:12px 15px}.ld-name{font-size:14.5px}.ld-meta{font-size:12.5px}
   .ld-pk,.ld-ag{font-size:14px}.ld-pks,.ld-upd{font-size:12.5px}.ld-val{font-size:15px}
   .pill{font-size:12.5px;padding:6px 11px}.chip,.btn-o,.btn-b{font-size:13.5px;padding:10px 14px}
@@ -934,11 +929,11 @@ button,input,select,textarea{font-size:inherit}
   .kpi-lb{font-size:10.8px!important;line-height:1.25}.kpi-row{margin-top:9px!important;gap:7px}
   .kpi-big{font-size:25px!important;letter-spacing:-.8px!important}.kpi-big .j{font-size:15px!important}
   .kpi-mid{font-size:20px!important;letter-spacing:-.5px!important}.kpi-sub,.kpi-mlb{font-size:9.8px!important;line-height:1.35}
-  .kpi-up{font-size:9.5px!important;padding:3px 6px!important;margin-bottom:1px!important}.kpi-div{height:32px}
+  .kpi-up{font-size:9.5px!important;padding:3px 6px!important;margin-bottom:1px!important}
   .dashboard-section-space{margin-top:12px!important}
   .grid2,.grid3{grid-template-columns:1fr!important;gap:12px!important}
   .grid3>.card:last-child:nth-child(odd){grid-column:auto}
-  .tg-lb,.tg-val{font-size:12.5px!important}.tg-sub{font-size:10.5px!important}.tg-bar{height:8px!important}
+  .target-label,.target-value{font-size:12.5px!important}.target-desc{font-size:10.5px!important}.tg-bar{height:8px!important}
   .lb-name{font-size:12.5px!important}.lb-sub,.lb-cl{font-size:10.5px!important}.lb-val{font-size:12px!important}
   .lb-row{padding:8px 0!important}.zone2-total{font-size:21px!important}.zone2-count{font-size:10px!important;padding:6px 9px!important}
   .zone2-list{gap:8px!important}.zone2-item{padding:10px 11px!important;border-radius:11px!important}.zone2-row{font-size:12px!important}.zone2-meta{font-size:10px!important}
@@ -1005,8 +1000,7 @@ button,input,select,textarea{font-size:inherit}
   .kpis{grid-template-columns:1fr 1fr!important;gap:8px!important}
   .kpis>.card{padding:10px!important}
   .kpi-big{font-size:23px!important}.kpi-mid{font-size:18px!important}
-  .kpi-row[style*="gap:18px"]{gap:8px!important;flex-wrap:wrap}
-  .kpi-div{display:none}
+  .kpi-row{gap:8px!important}
   .dash-filter-clean .dash-range-pill{width:100%;justify-content:center}
   .fu-row{grid-template-columns:34px minmax(0,1fr) auto!important;padding-inline:10px!important}
   .av46{width:34px!important;height:34px!important;font-size:13px!important}
@@ -1913,7 +1907,7 @@ function renderDash(){
       </div>
       ${r.preset==='custom'?`<div class="dash-date-clean"><input type="date" value="${esc(S.dashboard.start)}" onchange="setDashCustom('start',this.value)"><span class="sep">hingga</span><input type="date" value="${esc(S.dashboard.end)}" onchange="setDashCustom('end',this.value)"></div>`:''}
       <div class="dash-note-line">Semua KPI, trend, status, jualan agent dan zon akan berubah ikut tempoh yang dipilih.</div>
-      ${!m.spendInfo.available?`<div class="dash-warning">Kos iklan, CPL dan ROAS hanya dipaparkan bila sistem ada <b>rekod spend sebenar</b> untuk tempoh tersebut. Untuk penapis seperti Semalam, 3 Hari, 7 Hari atau 30 Hari, sistem perlukan log spend harian mengikut tarikh. Jika tiada log, sistem akan paparkan “—” supaya tiada data anggaran.</div>`:''}
+      ${!m.spendInfo.available?`<div class="dash-warning">Kos iklan, CPL dan ROAS hanya dipaparkan bila sistem ada <b>rekod spend sebenar</b> untuk tempoh tersebut. Untuk filter seperti Semalam, 3 Hari, 7 Hari atau 30 Hari, sistem perlukan log spend harian mengikut tarikh. Jika tiada log, sistem akan paparkan “—” supaya tiada data anggaran.</div>`:''}
     </div>`;
 
     const spendShown=m.spendInfo.available?fmtK(m.spend):'—';
@@ -1937,11 +1931,9 @@ function renderDash(){
       </div>
       <div class="card pad">
         <div class="kpi-hd"><div class="kpi-ic" style="background:#fdf0e0">${I.arrowUR(C.amber)}</div><div class="kpi-lb">Kos Iklan, CPL &amp; ROAS</div></div>
-        <div class="kpi-row" style="gap:18px">
+        <div class="kpi-row" style="gap:14px 22px;flex-wrap:wrap">
           <div><div class="kpi-mid">${m.spendInfo.available?'RM '+nf(m.spend):'—'}</div><div class="kpi-mlb">Spend</div></div>
-          <div class="kpi-div"></div>
-          <div><div class="kpi-mid">${m.cpl==null?'—':'RM '+m.cpl}</div><div class="kpi-mlb">CPL</div></div>
-          <div class="kpi-div"></div>
+          <div><div class="kpi-mid">${m.cpl==null?'—':'RM '+nf(m.cpl)}</div><div class="kpi-mlb">CPL</div></div>
           <div><div class="kpi-mid" style="color:#16a34a">${m.roas==null?'—':m.roas+'×'}</div><div class="kpi-mlb">ROAS</div></div>
         </div>
         <div class="kpi-sub">${spendSub}</div>
@@ -1949,12 +1941,12 @@ function renderDash(){
     </div>`;
 
     const tg=[
-      {lb:'Pax',val:m.pax,sas:target.pax,warna:C.blue,teks:m.pax>=target.pax?'Sasaran bulanan tercapai 🎉':Math.max(0,target.pax-m.pax)+' pax lagi ke sasaran bulanan',vs:m.pax+' / '+target.pax},
-      {lb:'Leads',val:m.leads,sas:target.leads,warna:C.purple,teks:'Data sebenar '+m.leads+' lead dalam tempoh dipilih',vs:m.leads+' / '+target.leads},
+      {lb:'Pax',val:m.pax,sas:target.pax,warna:C.blue,teks:m.pax>=target.pax?'Sasaran bulanan tercapai 🎉':nf(Math.max(0,target.pax-m.pax))+' pax lagi ke sasaran bulanan',vs:nf(m.pax)+' / '+nf(target.pax)},
+      {lb:'Leads',val:m.leads,sas:target.leads,warna:C.purple,teks:'Data sebenar '+nf(m.leads)+' lead dalam tempoh dipilih',vs:nf(m.leads)+' / '+nf(target.leads)},
       {lb:'Jualan',val:m.sales,sas:target.sales,warna:C.green,teks:m.sales>=target.sales?'Sasaran bulanan tercapai 🎉':fmtK(Math.max(0,target.sales-m.sales))+' lagi ke sasaran bulanan',vs:fmtK(m.sales)+' / '+fmtK(target.sales)},
       {lb:'Belanja Iklan',val:m.spend,sas:target.spend,warna:C.amber,teks:!m.spendInfo.available?'Spend sebenar belum tersedia untuk tempoh ini':(m.spend<=target.spend?'Masih dalam bajet bulanan':'Melebihi bajet bulanan'),vs:(m.spendInfo.available?fmtK(m.spend):'—')+' / '+fmtK(target.spend)}
     ];
-    const tgHTML=tg.map(t=>`<div style="margin-top:16px"><div class="tg-row"><span class="tg-lb">${t.lb}</span><span class="tg-val">${t.vs}</span></div><div class="tg-bar"><div style="width:${pct(t.val,t.sas)}%;background:${t.warna}"></div></div><div class="tg-sub">${t.teks}</div></div>`).join('');
+    const tgHTML=`<div class="target-stack">${tg.map(t=>`<div class="target-item"><div class="target-head"><span class="target-label">${t.lb}</span><span class="target-value">${t.vs}</span></div><div class="tg-bar"><div style="width:${pct(t.val,t.sas)}%;background:${t.warna}"></div></div><div class="target-desc">${t.teks}</div></div>`).join('')}</div>`;
 
     const tr=dashTrendBuckets(r);
     const TP=tr.points.map(p=>({label:p.label,leads:leadsDashRange(p).length,closed:salesDashRange(p).length}));
@@ -2035,7 +2027,7 @@ function renderLeads(){
   const advOn=adv.agent||adv.pakej||adv.negeri||adv.camp||adv.senyap;
   const opt=(arr,cur)=>'<option value="">Semua</option>'+arr.map(v=>`<option${v===cur?' selected':''}>${esc(v)}</option>`).join('');
   const advPanel=`<div class="lead-adv-wrap">
-    <button type="button" class="btn-o${advOn?' on':''}" onclick="toggleAdv(event)">${I.filter}Penapis Lanjutan</button>
+    <button type="button" class="btn-o${advOn?' on':''}" onclick="toggleAdv(event)">${I.filter}Filter Lanjutan</button>
     <div class="adv${f.advOpen?' open':''}" onclick="event.stopPropagation()">
       ${isAgent()?'':`<div class="adv-lb">Agent</div><select onchange="setAdv('agent',this.value)">${opt(ALL_AGENTS,adv.agent)}</select>`}
       <div class="adv-lb">Pakej</div><select onchange="setAdv('pakej',this.value)">${opt(allPkgs.map(p=>p.name),adv.pakej)}</select>
@@ -2092,7 +2084,7 @@ function renderLeads(){
         <thead><tr><th>Pelanggan</th><th>Pakej &amp; Pax</th><th>Agent</th><th class="r">Nilai</th><th>Status</th><th>${f.followupMode?'Tempoh Senyap':'Dikemaskini'}</th><th class="r">Tindakan</th></tr></thead>
         <tbody>${rows}</tbody></table></div>
       <div class="tfoot"><div class="tfoot-txt">Menunjukkan <b>${show.length}</b> daripada ${list.length} lead</div><div class="pgs"><div class="pg${f.pageNo===1?' dis':''}" onclick="setPage(${f.pageNo-1})">Sebelum</div>${pgNums(f.pageNo,pages)}<div class="pg${f.pageNo===pages?' dis':''}" onclick="setPage(${f.pageNo+1})">Seterusnya</div></div></div>`
-      : `<div class="empty"><div class="empty-t">${f.followupMode?'Tiada lead perlu follow up':'Tiada lead ditemui'}</div><div class="empty-s">${f.followupMode?'Semua lead Contacted masih mempunyai kemas kini dalam 3 hari terakhir.':'Cuba tukar penapis atau kosongkan carian di atas'}</div></div>`}
+      : `<div class="empty"><div class="empty-t">${f.followupMode?'Tiada lead perlu follow up':'Tiada lead ditemui'}</div><div class="empty-s">${f.followupMode?'Semua lead Contacted masih mempunyai kemas kini dalam 3 hari terakhir.':'Cuba tukar filter atau kosongkan carian di atas'}</div></div>`}
     </div>
   </div>`;
 }
@@ -2200,7 +2192,7 @@ function renderAfterSales(){
       ${list.length ? `<div class="tblwrap"><table class="tbl">
         <thead><tr><th>Jemaah</th><th>Pakej &amp; Berlepas</th><th>Pasport</th><th>Visa</th><th>Briefing</th><th>Bayaran</th><th class="r">Tindakan</th></tr></thead>
         <tbody>${rows}</tbody></table></div>`
-      : '<div class="empty"><div class="empty-t">Tiada jemaah dalam penapis ini</div><div class="empty-s">Cuba tukar penapis atau kosongkan carian di atas</div></div>'}
+      : '<div class="empty"><div class="empty-t">Tiada jemaah dalam filter ini</div><div class="empty-s">Cuba tukar filter atau kosongkan carian di atas</div></div>'}
     </div>
   </div>`;
 }
@@ -2438,7 +2430,7 @@ function renderAgent(){
       ${list.length ? `<div class="tblwrap"><table class="tbl">
         <thead><tr><th>Agent</th><th>Peranan</th><th>Cawangan</th><th class="r">Lead Dipegang</th><th>Akses</th><th>Aktif Terakhir</th><th class="r">Tindakan</th></tr></thead>
         <tbody>${rows}</tbody></table></div>`
-      : '<div class="empty"><div class="empty-t">Tiada agent ditemui</div><div class="empty-s">Cuba tukar penapis akses atau kosongkan carian</div></div>'}
+      : '<div class="empty"><div class="empty-t">Tiada agent ditemui</div><div class="empty-s">Cuba tukar filter akses atau kosongkan carian</div></div>'}
     </div>
     ${isSuper() ? `
     <div class="card"><div class="as-fhd" style="border-bottom:none">
@@ -3449,7 +3441,7 @@ function navFollowUp(){
 }
 function gotoSenyap(){ navFollowUp(); }
 
-/* ══════════════════ Penapis ══════════════════ */
+/* ══════════════════ Filter ══════════════════ */
 function setLeadFilter(f){ S.leads.followupMode=false; S.leads.adv.senyap=false; S.leads.filter=f; S.leads.pageNo=1; render(); }
 function setPage(n){ S.leads.pageNo=Math.max(1,n); render(); }
 function toggleAdv(e){ e.stopPropagation(); const open=S.leads.advOpen; tutupMenu(); S.leads.advOpen=!open; render(); }
@@ -4173,7 +4165,7 @@ else init();
       </div>
       <div class="team-stage">
         ${top3.length ? `<div class="team-podium-v14">${podium}</div>` : ''}
-        ${ranked.length ? `<div class="team-grid-v14">${cards}</div>` : '<div class="card empty"><div class="empty-t">Tiada agent ditemui</div><div class="empty-s">Cuba tukar penapis zon anda</div></div>'}
+        ${ranked.length ? `<div class="team-grid-v14">${cards}</div>` : '<div class="card empty"><div class="empty-t">Tiada agent ditemui</div><div class="empty-s">Cuba tukar filter zon anda</div></div>'}
       </div>
     </div>`;
   };
