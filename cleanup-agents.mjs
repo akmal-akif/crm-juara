@@ -4,6 +4,7 @@
 // ============================================================
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { normAgentKey, agentCompletenessScore } from "./public/domain/agents.mjs";
 
 const cfg = {
   apiKey: "AIzaSyDoeFDNz1bEFr1uAmPz4gtu8c71LvJDcok",
@@ -16,7 +17,7 @@ const cfg = {
 
 // Tukar ke true kalau nak PREVIEW dulu (tak padam apa-apa, cuma tunjuk).
 // Biar false untuk padam betul.
-const DRY_RUN = false;
+const DRY_RUN = true;
 
 const app = initializeApp(cfg);
 const db = getFirestore(app);
@@ -26,16 +27,17 @@ async function dedupe(collName) {
   const docs = snap.docs.map(d => ({ id: d.id, data: d.data() }));
   const byName = {};
   for (const d of docs) {
-    const name = (d.data.name || "").trim();
-    if (!name) continue;
-    (byName[name] = byName[name] || []).push(d);
+    const key = normAgentKey(d.data.name);
+    if (!key) continue;
+    (byName[key] = byName[key] || []).push(d);
   }
   let kept = 0, deleted = 0;
-  for (const name of Object.keys(byName)) {
-    const group = byName[name];
+  for (const key of Object.keys(byName)) {
+    const group = byName[key];
+    const name = group[0].data.name;
     if (group.length <= 1) { kept++; continue; }
     // Simpan rekod paling lengkap (contoh: yang ada nombor telefon).
-    group.sort((a, b) => Object.keys(b.data).length - Object.keys(a.data).length);
+    group.sort((a, b) => agentCompletenessScore(b.data) - agentCompletenessScore(a.data));
     kept++;
     for (let i = 1; i < group.length; i++) {
       console.log(`  ${DRY_RUN ? "[PREVIEW] akan padam" : "PADAM"}: ${collName}/${group[i].id}  (${name})`);

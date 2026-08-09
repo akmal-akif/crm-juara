@@ -2,9 +2,18 @@
 <html lang="ms">
 <head>
 <script type="module">
-  import { closedDate, parseCRMDate } from './domain/leads.mjs';
+  import { closedDate, parseCRMDate, normalizePhoneMY, validateLead } from './domain/leads.mjs';
+  import { normCampaignName, campaignUpdatedMs, canonicalCampaigns } from './domain/campaigns.mjs';
+  import { validateAgent, renameAgentCascade } from './domain/agents.mjs';
   window.closedDate = closedDate;
   window.parseCRMDate = parseCRMDate;
+  window.normalizePhoneMY = normalizePhoneMY;
+  window._validateLead = validateLead;
+  window.normCampaignName = normCampaignName;
+  window.campaignUpdatedMs = campaignUpdatedMs;
+  window._canonicalCampaigns = canonicalCampaigns;
+  window._validateAgent = validateAgent;
+  window._renameAgentCascade = renameAgentCascade;
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1425,7 +1434,6 @@ function relTime(iso){
 }
 function initial(n){ return (String(n||'?').trim()[0] || '?').toUpperCase(); }
 function pct(a, b){ return b > 0 ? Math.min(100, Math.round(a / b * 100)) : 0; }
-function normalizePhoneMY(raw){ let p = (raw||'').replace(/\D/g,''); if (!p) return ''; if (p.indexOf('60') === 0) return p; if (p.indexOf('0') === 0) return '60' + p.slice(1); return '60' + p; }
 function tarikhLabel(raw){
   const s = (raw||'').toString().trim();
   if (!s) return 'Belum pasti';
@@ -1546,28 +1554,7 @@ function agentAvatar(name, color, size){
   const u=userByName(name), px=parseInt(size)||42, url=u && u.photoURL ? String(u.photoURL) : '';
   return url ? '<img class="av av-img av'+px+'" src="'+esc(url)+'" alt="'+esc(name||'Profil')+'" referrerpolicy="no-referrer">' : avatar(name,color,px);
 }
-function normCampaignName(n){ return String(n||'').trim().toLowerCase().replace(/[–—−]/g,'-').replace(/\s+/g,' '); }
-function campaignUpdatedMs(k){ const d=parseCRMDate(k.updatedAt||k.createdAt||k.date||k.dateStart||0); return d && !isNaN(d.getTime()) ? d.getTime() : 0; }
-function campaignGroups(){
-  const g={};
-  (allCamps||[]).forEach(k=>{ const key=normCampaignName(k.name); if(!key) return; (g[key]||(g[key]=[])).push(k); });
-  return g;
-}
-function canonicalCampaigns(){
-  const out=[];
-  Object.keys(campaignGroups()).forEach(key=>{
-    const group=campaignGroups()[key].slice().sort((a,b)=>campaignUpdatedMs(b)-campaignUpdatedMs(a));
-    const base=Object.assign({},group[0]);
-    ['platform','dateStart','dateEnd','pakejLink'].forEach(f=>{ if(!base[f]){ const hit=group.find(x=>x[f]); if(hit) base[f]=hit[f]; } });
-    if(!(parseFloat(base.spend)>0)) base.spend=Math.max.apply(null,group.map(x=>parseFloat(x.spend)||0).concat([0]));
-    if(!(parseFloat(base.budget)>0)) base.budget=Math.max.apply(null,group.map(x=>parseFloat(x.budget)||0).concat([0]));
-    base.name=String(base.name||group[0].name||'').trim();
-    base._duplicateIds=group.slice(1).map(x=>x._id);
-    base._duplicateCount=base._duplicateIds.length;
-    out.push(base);
-  });
-  return out.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
-}
+function canonicalCampaigns(){ return window._canonicalCampaigns(allCamps); }
 function uniqueCampHistory(){
   const seen={};
   (allCampHistory||[]).forEach(h=>{
@@ -1580,13 +1567,14 @@ function uniqueCampHistory(){
 }
 const isSuper = () => CU && CU.role === 'superadmin';
 const isMgr = () => CU && (CU.role === 'admin' || CU.role === 'superadmin');
+const isAgent = () => CU && CU.role === 'agent';
 
 /* ══════════════════ Kiraan ══════════════════ */
 function nowMY(){ return new Date(Date.now() + 8*3600000); }
 function curMo(){ const d = nowMY(); return { mo:d.getUTCMonth(), yr:d.getUTCFullYear() }; }
 function leadDate(l){ return parseCRMDate(l.createdAt || l.date || l.updatedAt); }
 function inMonth(d, mo, yr){ return d.getMonth() === mo && d.getFullYear() === yr; }
-function visLeads(){ return (CU && CU.role === 'agent') ? allLeads.filter(l => l.agent === CU.name) : allLeads; }
+function visLeads(){ return (isAgent()) ? allLeads.filter(l => l.agent === CU.name) : allLeads; }
 function leadsMonth(mo, yr){ return visLeads().filter(l => inMonth(leadDate(l), mo, yr)); }
 function salesMonth(mo, yr){ return visLeads().filter(l => l.status === 'Closed' && inMonth(closedDate(l), mo, yr)); }
 function leadVal(l){ return parseFloat(l.value) || 0; }
@@ -1600,7 +1588,7 @@ function leadLastTouch(l){
 function senyapHari(l){ const t = leadLastTouch(l); return t == null ? 999 : Math.floor((Date.now() - t) / DAY); }
 function staleLeads(){
   let ls = allLeads.filter(l => l.status === 'Contacted');
-  if (CU && CU.role === 'agent') ls = ls.filter(l => l.agent === CU.name);
+  if (isAgent()) ls = ls.filter(l => l.agent === CU.name);
   return ls.map(l => ({ l:l, days:(leadLastTouch(l) ? Math.floor((Date.now() - leadLastTouch(l)) / DAY) : null) }))
     .filter(x => x.days === null || x.days >= 3)
     .sort((a,b) => ((b.days == null ? 999999 : b.days) - (a.days == null ? 999999 : a.days)));
@@ -2039,7 +2027,7 @@ function renderLeads(){
   const advPanel=`<div class="lead-adv-wrap">
     <button type="button" class="btn-o${advOn?' on':''}" onclick="toggleAdv(event)">${I.filter}Penapis Lanjutan</button>
     <div class="adv${f.advOpen?' open':''}" onclick="event.stopPropagation()">
-      ${(CU&&CU.role==='agent')?'':`<div class="adv-lb">Agent</div><select onchange="setAdv('agent',this.value)">${opt(ALL_AGENTS,adv.agent)}</select>`}
+      ${isAgent()?'':`<div class="adv-lb">Agent</div><select onchange="setAdv('agent',this.value)">${opt(ALL_AGENTS,adv.agent)}</select>`}
       <div class="adv-lb">Pakej</div><select onchange="setAdv('pakej',this.value)">${opt(allPkgs.map(p=>p.name),adv.pakej)}</select>
       <div class="adv-lb">Negeri</div><select onchange="setAdv('negeri',this.value)">${opt(NEGERI_LIST,adv.negeri)}</select>
       <div class="adv-lb">Kempen</div><select onchange="setAdv('camp',this.value)">${opt(canonicalCampaigns().map(k=>k.name),adv.camp)}</select>
@@ -2110,7 +2098,7 @@ function pgNums(cur, pages){
 function renderPipeline(){
   const p = S.pipeline;
   const base = visLeads().filter(l => (!p.agent || l.agent === p.agent) && cocok(l, S.q));
-  const agenSel = (CU && CU.role === 'agent') ? '' : `
+  const agenSel = (isAgent()) ? '' : `
     <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:6px">
       <div class="as-chip${!p.agent ? ' on' : ''}" onclick="setPipeAgen('')"><span class="sq" style="background:#9aa5ba"></span>Semua agent <span style="opacity:.6">${base.length}</span></div>
       ${ALL_AGENTS.map(n => `<div class="as-chip${p.agent === n ? ' on' : ''}" onclick="setPipeAgen('${esc(n)}')"><span class="sq" style="background:${avOf(n)}"></span>${esc(n)}</div>`).join('')}
@@ -3223,10 +3211,10 @@ function isiBorangLead(l){
   isiSelect($('ml-camp'), canonicalCampaigns().map(k => k.name), l ? l.campaign : '', '<option value="">— Tiada —</option>');
   isiSelect($('ml-status'), STATUSES, l ? l.status : 'New');
   const agentEl = $('ml-agent');
-  const agOpts = (CU && CU.role === 'agent') ? [CU.name] : ALL_AGENTS;
-  agentEl.innerHTML = ((CU && CU.role === 'agent') ? '' : '<option value="__AUTO__">Auto ikut negeri</option>') +
+  const agOpts = (isAgent()) ? [CU.name] : ALL_AGENTS;
+  agentEl.innerHTML = ((isAgent()) ? '' : '<option value="__AUTO__">Auto ikut negeri</option>') +
     agOpts.map(n => `<option value="${esc(n)}"${l && l.agent === n ? ' selected' : ''}>${esc(n)}</option>`).join('');
-  if (!l && CU && CU.role === 'agent') agentEl.value = CU.name;
+  if (!l && isAgent()) agentEl.value = CU.name;
   const c = curMo();
   const dl = $('dl-tarikh'); let dlh = '<option value="Belum pasti">';
   for (let i = 1; i <= 14; i++){ let mo = c.mo + i, yr = c.yr; while (mo > 11){ mo -= 12; yr++; } dlh += '<option value="' + MY_MONTHS[mo] + ' ' + yr + '">'; }
@@ -3247,7 +3235,7 @@ function openAddLead(){
   $('ml-title').textContent = 'Tambah Lead Baru';
   $('ml-id').value = '';
   isiBorangLead(null);
-  if (!(CU && CU.role === 'agent')) $('ml-agent').value = '__AUTO__';
+  if (!(isAgent())) $('ml-agent').value = '__AUTO__';
   autoVal();
   om('m-lead');
 }
@@ -3261,17 +3249,14 @@ function editLead(id){
 }
 async function saveLead(){
   const name = $('ml-name').value.trim();
-  if (name.length < 3){ toast('Sila isi nama penuh pelanggan', true); return; }
   const phone = $('ml-phone').value.trim();
-  if (normalizePhoneMY(phone).length < 10){ toast('Nombor telefon tidak lengkap', true); return; }
   const id = $('ml-id').value;
   const totalPax = Math.max(1, parseInt($('ml-pax').value, 10) || 1);
   const bilikDetail = getBilikDetail();
-  const jumlahDiagih = bilikDetail.reduce((s,b) => s + b.pax, 0);
-  if (jumlahDiagih !== totalPax){
-    toast('Agihan bilik mesti sama dengan jumlah pax. Sekarang ' + jumlahDiagih + ' daripada ' + totalPax + ' pax.', true);
-    return;
-  }
+  let validationError;
+  try { validationError = window._validateLead({ name, phone, pax:totalPax, bilikDetail }); }
+  catch(e){ toast('Ralat: ' + e.message, true); return; }
+  if (validationError){ toast(validationError, true); return; }
   const now = new Date().toISOString();
   const data = {
     name:name, phone:phone, negeri:$('ml-negeri').value, pakej:$('ml-pakej').value,
@@ -4011,28 +3996,22 @@ else init();
     const cawangan=$('mu-cawangan').value;
     const role=$('mu-role').value;
     const status=$('mu-status').value;
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ toast('E-mel tidak sah.',true); return; }
-    if(!name){ toast('Nama penuh wajib diisi.',true); return; }
-    if(!phone || phone.length<10){ toast('No. WhatsApp wajib diisi dengan format yang sah.',true); return; }
-    const lama=idSedia?allUsers.find(x=>x._id===idSedia):null;
-    const emailChanged=!!lama && email!==idSedia;
-    const emailClash=allUsers.find(u=>u._id!==idSedia && String(u.email||u._id||'').toLowerCase()===email);
-    if(emailClash){ toast('E-mel ini sudah digunakan oleh akaun lain.',true); return; }
-    const nameClash=allUsers.find(u=>u._id!==idSedia && u.status==='active' && String(u.name||'').trim().toLowerCase()===name.toLowerCase());
-    if(nameClash){ toast('Nama "'+name+'" sudah digunakan agent lain.',true); return; }
-    if(emailChanged && idSedia===String(BOOTSTRAP_ADMIN_EMAIL).toLowerCase()){ toast('E-mel Super Admin utama tidak boleh ditukar melalui CRM.',true); return; }
-    if(emailChanged && CU && idSedia===String(CU.email||'').toLowerCase()){ toast('E-mel akaun yang sedang digunakan tidak boleh ditukar. Log masuk menggunakan Super Admin lain terlebih dahulu.',true); return; }
+    let v;
+    try { v=window._validateAgent({ idSedia, email, name, phone, allUsers, currentUserEmail:(CU&&CU.email)||'', bootstrapAdminEmail:BOOTSTRAP_ADMIN_EMAIL }); }
+    catch(e){ toast('Ralat: ' + e.message, true); return; }
+    if(v.error){ toast(v.error,true); return; }
+    const { lama, emailChanged } = v;
     if(emailChanged && !confirm('Tukar e-mel akses daripada '+idSedia+' kepada '+email+'?\n\nAgent perlu log masuk menggunakan akaun Google baharu.')) return;
     const data={name:name,phone:phone,cawangan:cawangan,role:role,status:status,updatedAt:new Date().toISOString()};
     if(!lama) data.createdAt=new Date().toISOString();
+    const dulu=lama?String(lama.name||'').trim():null;
     try{
       if(emailChanged) await API.migrateUserEmail(idSedia,email,data);
       else await API.saveUser(email,data);
-      if(lama && String(lama.name||'').trim()!==name){
-        const dulu=String(lama.name||'').trim();
-        const kena=allLeads.filter(l=>l.agent===dulu);
-        for(let i=0;i<kena.length;i++) await API.updateLead(kena[i]._id,{agent:name});
-        if(stateAssign[dulu]){ stateAssign[name]=stateAssign[dulu]; delete stateAssign[dulu]; await API.saveStateAssign(); }
+      if(dulu && dulu!==name){
+        const { leadIdsToUpdate, stateAssignValue } = window._renameAgentCascade(dulu, name, { allLeads, stateAssign });
+        for(let i=0;i<leadIdsToUpdate.length;i++) await API.updateLead(leadIdsToUpdate[i],{agent:name});
+        if(stateAssignValue!==undefined){ stateAssign[name]=stateAssignValue; delete stateAssign[dulu]; await API.saveStateAssign(); }
       }
       cm('m-user');
       toast(emailChanged?'E-mel dan maklumat agent berjaya dikemaskini.':'Maklumat agent berjaya dikemaskini.');

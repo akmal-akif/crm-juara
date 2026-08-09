@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { closedDate, parseCRMDate } from './leads.mjs';
+import { closedDate, parseCRMDate, normalizePhoneMY, validateLead } from './leads.mjs';
 
 test('parseCRMDate: empty/falsy raw returns epoch', () => {
   assert.equal(parseCRMDate(null).getTime(), 0);
@@ -64,4 +64,52 @@ test('closedDate: falls back to createdAt when nothing else is set', () => {
 
 test('closedDate: no date fields at all returns epoch', () => {
   assert.equal(closedDate({}).getTime(), 0);
+});
+
+test('normalizePhoneMY: already-prefixed 60 number passed through', () => {
+  assert.equal(normalizePhoneMY('60123456789'), '60123456789');
+});
+
+test('normalizePhoneMY: leading 0 replaced with 60', () => {
+  assert.equal(normalizePhoneMY('0123456789'), '60123456789');
+});
+
+test('normalizePhoneMY: no leading 0/60 gets 60 prepended', () => {
+  assert.equal(normalizePhoneMY('123456789'), '60123456789');
+});
+
+test('normalizePhoneMY: strips non-digit characters first', () => {
+  assert.equal(normalizePhoneMY('012-345 6789'), '60123456789');
+});
+
+test('normalizePhoneMY: empty/nullish returns empty string', () => {
+  assert.equal(normalizePhoneMY(''), '');
+  assert.equal(normalizePhoneMY(null), '');
+  assert.equal(normalizePhoneMY(undefined), '');
+});
+
+test('validateLead: name shorter than 3 chars is rejected', () => {
+  const err = validateLead({ name: 'Ab', phone: '60123456789', pax: 1, bilikDetail: [{ pax: 1 }] });
+  assert.equal(err, 'Sila isi nama penuh pelanggan');
+});
+
+test('validateLead: phone shorter than 10 digits (after normalization) is rejected', () => {
+  const err = validateLead({ name: 'Ahmad Zaki', phone: '12345', pax: 1, bilikDetail: [{ pax: 1 }] });
+  assert.equal(err, 'Nombor telefon tidak lengkap');
+});
+
+test('validateLead: room allocation total must match pax', () => {
+  const err = validateLead({ name: 'Ahmad Zaki', phone: '60123456789', pax: 3, bilikDetail: [{ pax: 1 }] });
+  assert.equal(err, 'Agihan bilik mesti sama dengan jumlah pax. Sekarang 1 daripada 3 pax.');
+});
+
+test('validateLead: valid lead returns null', () => {
+  const err = validateLead({ name: 'Ahmad Zaki', phone: '60123456789', pax: 2, bilikDetail: [{ pax: 2 }] });
+  assert.equal(err, null);
+});
+
+test('validateLead: checks name before phone before room allocation, in that order', () => {
+  // all three would fail; name error should surface first, matching the original saveLead()'s check order
+  const err = validateLead({ name: '', phone: '1', pax: 5, bilikDetail: [] });
+  assert.equal(err, 'Sila isi nama penuh pelanggan');
 });

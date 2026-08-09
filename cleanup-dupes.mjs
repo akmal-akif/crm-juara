@@ -10,12 +10,13 @@
 //      run sekali lagi. Kali ni betul-betul padam.
 // ============================================================
 
-const DRY_RUN = false;  // LIVE — run sekali terus padam duplicate
+const DRY_RUN = true;  // PREVIEW dulu — tukar ke false untuk padam betul
 
 import { initializeApp } from "firebase/app";
 import {
   getFirestore, collection, getDocs, deleteDoc, doc
 } from "firebase/firestore";
+import { normAgentKey, agentCompletenessScore } from "./public/domain/agents.mjs";
 
 const fbCfg = {
   apiKey: "AIzaSyDoeFDNz1bEFr1uAmPz4gtu8c71LvJDcok",
@@ -29,23 +30,6 @@ const fbCfg = {
 const app = initializeApp(fbCfg);
 const db = getFirestore(app);
 
-// Skor "kelengkapan" — dokumen yang lebih lengkap akan DIKEKALKAN,
-// yang lain (duplicate) akan dipadam.
-function completenessScore(data) {
-  let score = 0;
-  for (const [k, v] of Object.entries(data)) {
-    if (v === null || v === undefined || v === "") continue;
-    if (typeof v === "object") {
-      // bilik object dgn nilai = lebih lengkap
-      const vals = Object.values(v).filter(x => x && x !== 0);
-      score += 1 + vals.length;
-    } else {
-      score += 1;
-    }
-  }
-  return score;
-}
-
 async function dedupe(collName, keyField = "name") {
   console.log(`\n=== ${collName} ===`);
   const snap = await getDocs(collection(db, collName));
@@ -55,8 +39,7 @@ async function dedupe(collName, keyField = "name") {
   // Kumpul ikut nama (case-insensitive, trim)
   const groups = {};
   for (const d of docs) {
-    const rawKey = (d.data[keyField] || "").toString().trim();
-    const key = rawKey.toLowerCase();
+    const key = normAgentKey(d.data[keyField]);
     if (!key) {
       console.log(`  ⚠ Dokumen ${d.id} takde "${keyField}" — dilangkau (tak disentuh)`);
       continue;
@@ -69,14 +52,14 @@ async function dedupe(collName, keyField = "name") {
     if (arr.length <= 1) continue; // takde duplicate
 
     // Susun: yang paling lengkap di depan (nak KEKAL), yang lain padam
-    arr.sort((a, b) => completenessScore(b.data) - completenessScore(a.data));
+    arr.sort((a, b) => agentCompletenessScore(b.data) - agentCompletenessScore(a.data));
     const keep = arr[0];
     const dupes = arr.slice(1);
 
     console.log(`\n  "${keep.data[keyField]}" — jumpa ${arr.length} salinan:`);
-    console.log(`    ✓ KEKAL  : ${keep.id} (skor ${completenessScore(keep.data)})`);
+    console.log(`    ✓ KEKAL  : ${keep.id} (skor ${agentCompletenessScore(keep.data)})`);
     for (const dup of dupes) {
-      console.log(`    ✗ PADAM  : ${dup.id} (skor ${completenessScore(dup.data)})`);
+      console.log(`    ✗ PADAM  : ${dup.id} (skor ${agentCompletenessScore(dup.data)})`);
       toDelete.push({ coll: collName, id: dup.id });
     }
   }
