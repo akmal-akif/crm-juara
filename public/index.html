@@ -477,6 +477,9 @@ select.pipe-agent-sel{width:auto;min-width:220px;max-width:280px}
 .rd.on .rd-dot{background:#2563eb}
 .rd-t{font-size:16.5px;font-weight:700}
 .rd-s{font-size:15px;color:#68758f;margin-top:3px}
+.bg-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media (max-width:760px){.bg-grid{grid-template-columns:1fr}}
+.bg-preview-box{border:1.5px dashed #e0e6f2;border-radius:14px;padding:18px;background:#f7f9fd}
 .tp-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 15px;background:#f7f9fd;border-radius:12px}
 .tp-t{font-size:16.5px;font-weight:700}
 .tp-s{font-size:14.5px;color:#79869e;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px}
@@ -1520,7 +1523,7 @@ let CU = null;                 // pengguna semasa {email,name,role,uid,photoURL,
 let MODE = 'fs';               // 'fs' | 'demo'
 let allLeads = [], trashedLeads = [], allCamps = [], allCampHistory = [], allPkgs = [], allAgents = [], allUsers = [];
 let TARGET = { pax:101, leads:2040, sales:500000, spend:11700 };
-let stateAssign = {}, pkgAssign = {};
+let stateAssign = {}, pkgAssign = {}, formCfg = {};
 let ALL_AGENTS = [];
 let notifItems = [], notifRead = 0;
 
@@ -1536,7 +1539,8 @@ const S = {
   agent:{ filter:'semua', sortBranch:false, ngOpen:{} },
   pakej:{ filter:'semua' },
   recycle:{},
-  profil:{ edit:false }
+  profil:{ edit:false },
+  borang:{ pkg:'' }
 };
 const PER = 12;
 
@@ -2590,6 +2594,9 @@ function renderProfil(){
 function renderSettings(){
   const boleh = isSuper();
   const script = buildAppsScript();
+  if (!S.borang.pkg && allPkgs.length) S.borang.pkg = allPkgs[0].name;
+  const bpkg = S.borang.pkg;
+  const rota = pkgAssign[bpkg] || [];
   $('pg-settings').innerHTML = `
   <div>
     <div class="st-grid">
@@ -2623,10 +2630,36 @@ function renderSettings(){
           <div><div class="st-t">Skrip WhatsApp</div><div class="st-s">Mesej intro &amp; follow-up dijana automatik dari data lead (nama, pakej, pax, tarikh) — tekan butang hijau pada mana-mana lead.</div></div>
         </div>
       </div>
+      <div class="card pad" style="grid-column:span 2">
+        <div style="display:flex;align-items:center;gap:13px">
+          <div class="st-ic" style="background:#e7f6ec">${I.share}</div>
+          <div><div class="st-t">Borang Lead</div><div class="st-s">Borang awam ikut pakej — pasang pada mana-mana landing page, lead auto-agih bergilir ke agent</div></div>
+        </div>
+        <div class="bg-grid" style="margin-top:20px">
+          <div>
+            <div class="in-lb">Pakej</div>
+            <select class="in-box" id="bg-pkg" onchange="pilihBorangPakej(this.value)">
+              ${allPkgs.map(p => `<option value="${esc(p.name)}"${p.name === bpkg ? ' selected' : ''}>${esc(p.name)}</option>`).join('') || '<option>Tiada pakej</option>'}
+            </select>
+            <div class="in-lb" style="margin-top:16px">Agent bergilir untuk pakej ini${boleh ? '' : ' · hanya Super Admin boleh ubah'}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              ${ALL_AGENTS.map(n => `<div class="as-chip${rota.includes(n) ? ' on' : ''}" onclick="toggleBorangAgent('${esc(n)}')"><span class="sq" style="background:${avOf(n)}"></span>${esc(n)}</div>`).join('') || '<div class="st-s">Tiada agent aktif.</div>'}
+            </div>
+            <div class="st-s" style="margin-top:9px">${rota.length ? 'Bergilir ikut susunan: ' + esc(rota.join(' → ')) : 'Belum ada agent dipilih — lead dari borang pakej ini tidak akan diagihkan.'}</div>
+            <div class="in-lb" style="margin-top:18px">URL Apps Script (selepas anda deploy skrip di bawah)</div>
+            <input class="in-box" id="bg-endpoint" style="font-size:14px;font-weight:600" value="${esc(formCfg.endpoint || '')}" placeholder="https://script.google.com/macros/s/xxxx/exec" ${boleh ? 'onchange="simpanBorangEndpoint()"' : 'disabled'}>
+          </div>
+          <div>
+            <div class="in-lb">Pratonton borang</div>
+            <div id="bg-preview" class="bg-preview-box"></div>
+            <button class="btn-o" style="margin-top:14px;width:100%;justify-content:center" onclick="salinKodBorang()">${I.doc.replace('#fff','#4a5568')}Salin Kod Borang</button>
+          </div>
+        </div>
+      </div>
       <div class="card pad">
         <div style="display:flex;align-items:center;gap:13px">
           <div class="st-ic" style="background:#fdf0e0">${I.link}</div>
-          <div><div class="st-t">Sambungan Borang (Apps Script)</div><div class="st-s">Salin dan tampal ke Google Apps Script untuk auto-masuk lead dari borang iklan</div></div>
+          <div><div class="st-t">Sambungan Borang (Apps Script)</div><div class="st-s">Langkah sekali sahaja — salin ke Google Apps Script supaya Borang Lead di atas boleh berfungsi</div></div>
         </div>
         <div class="code-box" id="script-code" style="margin-top:18px">${esc(script)}</div>
         <button class="btn-o" style="margin-top:14px" onclick="copyScript()">${I.doc.replace('#fff','#4a5568')}Salin Skrip</button>
@@ -2636,23 +2669,92 @@ function renderSettings(){
       ? 'Mod demo — data disimpan dalam pelayar sahaja · <span onclick="resetDemo()">Set semula data demo</span>'
       : 'Data disimpan selamat dalam Firebase (' + esc(FB_PROJECT) + ') · perubahan disegerak serta-merta untuk semua agent'}</div>
   </div>`;
+  renderBorangPreview();
+}
+function renderBorangPreview(){
+  const box = $('bg-preview');
+  if (!box || !window.JTForm) return;
+  JTForm.render(box, { package:S.borang.pkg, campaign:'pratonton', preview:true });
+}
+function pilihBorangPakej(v){ S.borang.pkg = v; render(); }
+async function toggleBorangAgent(n){
+  if (!isSuper()){ toast('Hanya Super Admin boleh ubah settings.', true); return; }
+  const pkg = S.borang.pkg; if (!pkg) return;
+  const list = (pkgAssign[pkg] || []).slice();
+  const i = list.indexOf(n);
+  if (i === -1) list.push(n); else list.splice(i, 1);
+  pkgAssign[pkg] = list;
+  try { await API.savePkgAssign(); } catch(e){ toast('Ralat: ' + e.message, true); }
+}
+async function simpanBorangEndpoint(){
+  if (!isSuper()){ toast('Hanya Super Admin boleh ubah settings.', true); return; }
+  formCfg.endpoint = $('bg-endpoint').value.trim();
+  try { await API.saveFormConfig(); toast('URL borang disimpan.'); }
+  catch(e){ toast('Ralat: ' + e.message, true); }
+}
+function buildBorangEmbed(){
+  const pkg = esc(S.borang.pkg || '');
+  const ep = esc(formCfg.endpoint || 'https://script.google.com/macros/s/xxxx/exec');
+  return '<div data-jt-form data-package="' + pkg + '" data-campaign="NAMA_KEMPEN_ANDA" data-endpoint="' + ep + '"></div>\n' +
+    '<script src="https://' + location.host + '/embed.js"><\/script>';
+}
+function salinKodBorang(){
+  const t = buildBorangEmbed();
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(() => toast('Kod borang disalin.')).catch(() => toast('Gagal menyalin.', true));
+  else toast('Gagal menyalin.', true);
 }
 function buildAppsScript(){
   const assignLines = Object.keys(pkgAssign).map(k => '    "' + k + '": [' + (pkgAssign[k]||[]).map(a => '"' + a + '"').join(', ') + ']').join(',\n');
-  return '// ==== Juara Travel — Lead Capture + Rotator (Apps Script) ====\n' +
-  '// Auto-rotate agent ikut pakej.\n' +
-  'var PROJECT_ID = "' + FB_PROJECT + '";\n' +
-  'var ASSIGN = {\n' + (assignLines || '    // (belum ada assignment)') + '\n};\n' +
-  'function doPost(e){\n' +
-  '  var d = JSON.parse(e.postData.contents);\n' +
-  '  var lead = { name:d.name, phone:d.phone, negeri:d.negeri||"", pakej:d.pakej||"",\n' +
-  '    pax:parseInt(d.pax)||1, tarikh:d.tarikh||"", campaign:d.campaign||"",\n' +
-  '    status:"New", value:0, createdAt:new Date().toISOString(),\n' +
-  '    updatedAt:new Date().toISOString(), date:new Date().toISOString().split("T")[0] };\n' +
-  '  var url = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID +\n' +
-  '    "/databases/(default)/documents/juara_leads";\n' +
-  '  // ... hantar `lead` melalui UrlFetchApp dengan token servis anda\n' +
-  '}';
+  return [
+'// ==== Juara Travel — Lead Capture + Rotator (Apps Script) ====',
+'// 1) Buka script.google.com > Projek baharu > tampal semua kod ini.',
+'// 2) Project Settings > Show "appsscript.json" > tambah scope di bawah:',
+'//    "oauthScopes": ["https://www.googleapis.com/auth/datastore",',
+'//      "https://www.googleapis.com/auth/script.external_request"]',
+'// 3) Deploy > New deployment > Web app > Who has access: Anyone.',
+'// 4) Salin URL deployment tu, tampal dalam CRM > Settings > Borang Lead.',
+'var PROJECT_ID = "' + FB_PROJECT + '";',
+'var ASSIGN = {',
+(assignLines || '  // (belum ada agent ditetapkan — buat di CRM > Settings > Borang Lead)'),
+'};',
+'',
+'function doPost(e){',
+'  var d = JSON.parse(e.postData.contents);',
+'  var pakej = d.pakej || "";',
+'  var lead = { name:d.name||"", phone:d.phone||"", negeri:d.negeri||"", pakej:pakej,',
+'    pax:parseInt(d.pax)||1, tarikh:d.tarikh||"", campaign:d.campaign||"", agent:pilihAgent_(pakej),',
+'    status:"New", value:0, createdAt:new Date().toISOString(),',
+'    updatedAt:new Date().toISOString(), date:new Date().toISOString().split("T")[0] };',
+'  tulisLead_(lead);',
+'  return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);',
+'}',
+'',
+'// Round robin ringkas — simpan giliran terakhir setiap pakej dalam Script Properties.',
+'function pilihAgent_(pakej){',
+'  var list = ASSIGN[pakej] || [];',
+'  if (!list.length) return "";',
+'  var prop = PropertiesService.getScriptProperties();',
+'  var key = "rr_" + pakej;',
+'  var idx = parseInt(prop.getProperty(key) || "0", 10);',
+'  prop.setProperty(key, String(idx + 1));',
+'  return list[idx % list.length];',
+'}',
+'',
+'function tulisLead_(lead){',
+'  var token = ScriptApp.getOAuthToken();',
+'  var url = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID +',
+'    "/databases/(default)/documents/juara_leads";',
+'  var fields = {',
+'    name:{stringValue:lead.name}, phone:{stringValue:lead.phone}, negeri:{stringValue:lead.negeri},',
+'    pakej:{stringValue:lead.pakej}, tarikh:{stringValue:lead.tarikh}, campaign:{stringValue:lead.campaign},',
+'    agent:{stringValue:lead.agent}, status:{stringValue:lead.status},',
+'    pax:{integerValue:String(lead.pax)}, value:{integerValue:String(lead.value)},',
+'    createdAt:{stringValue:lead.createdAt}, updatedAt:{stringValue:lead.updatedAt}, date:{stringValue:lead.date}',
+'  };',
+'  UrlFetchApp.fetch(url, { method:"post", contentType:"application/json",',
+'    headers:{ Authorization:"Bearer " + token }, payload:JSON.stringify({fields:fields}) });',
+'}'
+  ].join('\n');
 }
 </script>
 <script>
@@ -2817,7 +2919,8 @@ function subscribe(){
   unsubs.push(f.onSnapshot(f.collection(FB.db, 'juara_users'), s => { allUsers = s.docs.map(d => Object.assign({}, d.data(), { _id:d.id })); allUsers.sort((a,b) => (a.name||'').localeCompare(b.name||'')); if(CU){ const me=allUsers.find(u=>(u.email||'').toLowerCase()===(CU.email||'').toLowerCase()); if(me){ CU.name=me.name||CU.name; CU.role=me.role||CU.role; CU.cawangan=me.cawangan||''; CU.photoURL=me.photoURL||CU.googlePhotoURL||''; } } rebuildAgentList(); syncUser(); render(); }));
   unsubs.push(f.onSnapshot(f.doc(FB.db, 'juara_config', 'targets'), snap => { if (snap.exists()) TARGET = Object.assign({ pax:101, leads:2040, sales:500000, spend:11700 }, snap.data()); render(); }));
   unsubs.push(f.onSnapshot(f.doc(FB.db, 'juara_config', 'state_assignments'), snap => { stateAssign = snap.exists() ? snap.data() : {}; render(); }));
-  unsubs.push(f.onSnapshot(f.doc(FB.db, 'juara_config', 'assignments'), snap => { pkgAssign = snap.exists() ? snap.data() : {}; }));
+  unsubs.push(f.onSnapshot(f.doc(FB.db, 'juara_config', 'assignments'), snap => { pkgAssign = snap.exists() ? snap.data() : {}; render(); }));
+  unsubs.push(f.onSnapshot(f.doc(FB.db, 'juara_config', 'form'), snap => { formCfg = snap.exists() ? snap.data() : {}; render(); }));
 }
 
 /* ══════════════════ API (fs / demo) ══════════════════ */
@@ -2883,6 +2986,14 @@ const API = {
     if (MODE === 'demo'){ demoSave(); render(); return; }
     await FB.fs.setDoc(FB.fs.doc(FB.db, 'juara_config', 'state_assignments'), stateAssign);
   },
+  async savePkgAssign(){
+    if (MODE === 'demo'){ demoSave(); render(); return; }
+    await FB.fs.setDoc(FB.fs.doc(FB.db, 'juara_config', 'assignments'), pkgAssign);
+  },
+  async saveFormConfig(){
+    if (MODE === 'demo'){ demoSave(); render(); return; }
+    await FB.fs.setDoc(FB.fs.doc(FB.db, 'juara_config', 'form'), formCfg);
+  },
   async uploadPkgImg(id, file){
     if (MODE === 'demo'){
       const fr = new FileReader();
@@ -2913,7 +3024,7 @@ const API = {
 };
 function demoSave(){
   try {
-    localStorage.setItem(DEMO_KEY, JSON.stringify({ allLeads:allLeads, trashedLeads:trashedLeads, allCamps:allCamps, allPkgs:allPkgs, allUsers:allUsers, TARGET:TARGET, stateAssign:stateAssign }));
+    localStorage.setItem(DEMO_KEY, JSON.stringify({ allLeads:allLeads, trashedLeads:trashedLeads, allCamps:allCamps, allPkgs:allPkgs, allUsers:allUsers, TARGET:TARGET, stateAssign:stateAssign, pkgAssign:pkgAssign, formCfg:formCfg }));
   } catch(e){}
 }
 
@@ -2989,7 +3100,7 @@ function mulaDemo(){
   let ok = false;
   try {
     const raw = localStorage.getItem(DEMO_KEY);
-    if (raw){ const d = JSON.parse(raw); if (d && d.allLeads && d.allLeads.length){ allLeads = d.allLeads; trashedLeads = d.trashedLeads || []; allCamps = d.allCamps || []; allPkgs = d.allPkgs || []; allUsers = d.allUsers || []; TARGET = d.TARGET || TARGET; stateAssign = d.stateAssign || {}; ok = true; } }
+    if (raw){ const d = JSON.parse(raw); if (d && d.allLeads && d.allLeads.length){ allLeads = d.allLeads; trashedLeads = d.trashedLeads || []; allCamps = d.allCamps || []; allPkgs = d.allPkgs || []; allUsers = d.allUsers || []; TARGET = d.TARGET || TARGET; stateAssign = d.stateAssign || {}; pkgAssign = d.pkgAssign || {}; formCfg = d.formCfg || {}; ok = true; } }
   } catch(e){}
   if (!ok) demoSeed();
   rebuildAgentList();
@@ -4133,6 +4244,7 @@ else init();
   };
 })();
 </script>
+<script src="embed.js"></script>
 
 </body>
 </html>
