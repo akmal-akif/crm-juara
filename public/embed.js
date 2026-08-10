@@ -1,7 +1,8 @@
 /* ==== Juara Travel — Borang Lead (embeddable widget) ====
-   Letak <div data-jt-form data-package="..." data-campaign="..." data-endpoint="..."></div>
+   Letak <div data-jt-form data-form="..." data-package="..." data-campaign="..." data-endpoint="..."></div>
    pada mana-mana laman, kemudian <script src=".../embed.js" async></script>.
-   Lead yang dihantar terus masuk CRM dan diagihkan secara round-robin ikut pakej. */
+   Setiap borang (data-form) ada giliran agent sendiri — CRM > Settings > Borang Lead.
+   Lead yang dihantar terus masuk CRM dan diagihkan secara round-robin. */
 (function(){
   'use strict';
   var NEGERI = ['Perlis','Kedah','Pulau Pinang','Perak','Selangor','Kuala Lumpur','Putrajaya',
@@ -47,6 +48,7 @@
 
   function render(target, opts){
     opts = opts || {};
+    var formId = opts.formId || target.getAttribute('data-form') || '';
     var pakej = opts.package || target.getAttribute('data-package') || '';
     var campaign = opts.campaign || target.getAttribute('data-campaign') || '';
     var endpoint = opts.endpoint || target.getAttribute('data-endpoint') || '';
@@ -88,7 +90,7 @@
       btn.disabled = true;
       var payload = {
         name: name.value.trim(), phone: phone.value.trim(), negeri: negeri.value,
-        pax: pax.value, tarikh: tarikh.value.trim(), pakej: pakej, campaign: campaign
+        pax: pax.value, tarikh: tarikh.value.trim(), pakej: pakej, campaign: campaign, formId: formId
       };
       fetch(endpoint, {
         method: 'POST', mode: 'no-cors',

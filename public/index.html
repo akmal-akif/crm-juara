@@ -136,9 +136,9 @@ body.rail .s-chev{transform:rotate(180deg)}
 .kpi-dn{background:#fdeaea;color:#b91c1c}
 .kpi-sub{font-size:14.5px;color:#79869e;margin-top:8px}
 
-.grid2{display:grid;grid-template-columns:1.45fr 1fr;gap:18px;align-items:start}
+.grid2{display:grid;grid-template-columns:1.45fr 1fr;gap:18px;align-items:stretch}
 @media (max-width:980px){.grid2{grid-template-columns:1fr}}
-.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;align-items:stretch}
 
 /* Perlu Dihubungi */
 .fu-hd{display:flex;align-items:center;gap:14px;padding:20px 24px;background:#fff8ec;border-bottom:1px solid #f4e3c8}
@@ -457,6 +457,12 @@ select.pipe-agent-sel{width:auto;min-width:220px;max-width:280px}
 .tgl.on{background:#16a34a}
 .tgl span{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .18s}
 .tgl.on span{left:25px}
+.bf-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:15px;background:#f7f9fd;border-radius:12px}
+.bf-row.off{opacity:.55}
+.bf-name{font-size:16px;font-weight:700}
+.bf-meta{font-size:14px;color:#79869e;margin-top:3px}
+.ic-gy{background:#eef2fa}
+.ic-gy:hover{background:#e0e7f5}
 
 /* ── Settings ── */
 .st-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:18px;max-width:1300px;align-items:start}
@@ -475,8 +481,6 @@ select.pipe-agent-sel{width:auto;min-width:220px;max-width:280px}
 .rd.on .rd-dot{background:#2563eb}
 .rd-t{font-size:16.5px;font-weight:700}
 .rd-s{font-size:15px;color:#68758f;margin-top:3px}
-.bg-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
-@media (max-width:760px){.bg-grid{grid-template-columns:1fr}}
 .bg-preview-box{border:1.5px dashed #e0e6f2;border-radius:14px;padding:18px;background:#f7f9fd}
 .tp-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 15px;background:#f7f9fd;border-radius:12px}
 .tp-t{font-size:16.5px;font-weight:700}
@@ -1344,6 +1348,43 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   </div>
 </div>
 
+<!-- Modal: Borang Lead -->
+<div class="mo" id="m-form" onclick="if(event.target===this)cm('m-form')">
+  <div class="mo-box">
+    <div class="mo-hd">
+      <div class="mo-t" id="mf-title">Borang Baharu</div>
+      <button class="mo-x" onclick="cm('m-form')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#3c4a66" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+    </div>
+    <input type="hidden" id="mf-id">
+    <div class="f-grid">
+      <div class="f-row"><div class="f-lb">Nama borang</div><input class="f-in" id="mf-name" placeholder="Contoh: Pakej RM4990 — FB Ads"></div>
+      <div class="f-row"><div class="f-lb">Pakej (pilihan)</div><select class="f-in" id="mf-pkg"></select></div>
+    </div>
+    <div class="f-row"><div class="f-lb">Kempen lalai (pilihan)</div><input class="f-in" id="mf-campaign" placeholder="Contoh: FB Ads Ogos"></div>
+    <div class="f-row">
+      <div class="f-lb">Agent bergilir</div>
+      <div id="mf-agents" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    </div>
+    <div class="f-row" style="display:flex;align-items:center;justify-content:space-between;flex-direction:row">
+      <div class="f-lb" style="margin:0">Borang aktif</div>
+      <div class="tgl" id="mf-active-tgl" onclick="toggleMfActive()"><span></span></div>
+    </div>
+    <div class="f-row"><div class="f-lb">Pratonton borang</div><div id="mf-preview" class="bg-preview-box"></div></div>
+    <div class="f-row" id="mf-embed-wrap" style="display:none">
+      <div class="f-lb">Kod embed</div>
+      <div class="code-box" id="mf-embed" style="max-height:140px"></div>
+      <button class="btn-o" style="margin-top:10px;width:100%;justify-content:center" onclick="salinKodModal()"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#4a5568" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 8h6M9 12h6M9 16h3"></path></svg>Salin Kod Borang</button>
+    </div>
+    <div class="mo-ft" style="justify-content:space-between">
+      <button class="btn-ghost" id="mf-del" onclick="deleteFormAskModal()" style="color:#dc2626;border-color:#f6c9c9">Padam</button>
+      <div style="display:flex;gap:10px">
+        <button class="btn-ghost" onclick="cm('m-form')">Batal</button>
+        <button class="btn-b" onclick="saveForm()">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: Kempen -->
 <div class="mo" id="m-camp" onclick="if(event.target===this)cm('m-camp')">
   <div class="mo-box">
@@ -1518,10 +1559,11 @@ const TESTIMONI_URL = 'https://www.facebook.com/share/v/1EEH2NCZLF/';
 /* ══════════════════ Keadaan data (Firestore / demo) ══════════════════ */
 let CU = null;                 // pengguna semasa {email,name,role,uid,photoURL,cawangan}
 let MODE = 'fs';               // 'fs' | 'demo'
-let allLeads = [], trashedLeads = [], allCamps = [], allCampHistory = [], allPkgs = [], allAgents = [], allUsers = [];
+let allLeads = [], trashedLeads = [], allCamps = [], allCampHistory = [], allPkgs = [], allAgents = [], allUsers = [], allForms = [];
 let TARGET = { pax:101, leads:2040, sales:500000, spend:11700 };
 let stateAssign = {}, pkgAssign = {}, formCfg = {};
 let ALL_AGENTS = [];
+let mfAgents = [], mfActive = true;
 let notifItems = [], notifRead = 0;
 
 const S = {
@@ -1537,7 +1579,7 @@ const S = {
   pakej:{ filter:'semua' },
   recycle:{},
   profil:{ edit:false },
-  borang:{ pkg:'' }
+  borang:{}
 };
 const PER = 12;
 
@@ -1985,8 +2027,8 @@ function renderDash(){
 
     $('pg-dashboard').innerHTML=`<div class="wrap">${dashFilter}${kpis}
       <div class="card pad dashboard-section-space"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><div><div class="ct">Prestasi Sebenar vs Sasaran Bulanan</div><div class="cs">Data tempoh dipilih dibandingkan dengan sasaran bulanan tetap</div></div><div style="font-size:13px;color:#8a95ab;text-align:right">${esc(r.label)}</div></div>${tgHTML}</div>
-      <div class="grid2 dashboard-section-space"><div class="card pad"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div class="ct">Trend Lead &amp; Close</div><div class="cs">${tr.mode} · ${esc(r.label)}</div></div><div style="display:flex;gap:16px;font-size:14.5px;font-weight:600;color:#3c4a66"><span style="display:flex;align-items:center;gap:7px"><span style="width:11px;height:11px;border-radius:4px;background:#2563eb"></span>Leads</span><span style="display:flex;align-items:center;gap:7px"><span style="width:11px;height:11px;border-radius:4px;background:#16a34a"></span>Close</span></div></div><div style="margin-top:16px">${trend}</div></div>
-        <div class="card pad"><div class="ct">Status Lead</div><div class="cs">Pecahan ${fl.length} lead · ${esc(r.label)}</div>${donut}</div></div>
+      <div class="grid2 dashboard-section-space"><div class="card pad" style="display:flex;flex-direction:column"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div class="ct">Trend Lead &amp; Close</div><div class="cs">${tr.mode} · ${esc(r.label)}</div></div><div style="display:flex;gap:16px;font-size:14.5px;font-weight:600;color:#3c4a66"><span style="display:flex;align-items:center;gap:7px"><span style="width:11px;height:11px;border-radius:4px;background:#2563eb"></span>Leads</span><span style="display:flex;align-items:center;gap:7px"><span style="width:11px;height:11px;border-radius:4px;background:#16a34a"></span>Close</span></div></div><div style="margin-top:16px;flex:1;display:flex;align-items:center">${trend}</div></div>
+        <div class="card pad" style="display:flex;flex-direction:column"><div class="ct">Status Lead</div><div class="cs">Pecahan ${fl.length} lead · ${esc(r.label)}</div><div style="flex:1;display:flex;align-items:center">${donut}</div></div></div>
       <div class="grid3 dashboard-section-space"><div class="card pad"><div style="display:flex;align-items:center;gap:10px">${I.trophy}<div class="ct">Papan Pendahulu</div></div><div class="cs" style="margin-top:4px">${esc(r.label)}</div><div style="margin-top:14px">${lbHTML}</div></div>
         <div class="card pad">${znHTML}</div>
         <div class="card pad"><div class="ct">Aktiviti Terkini</div><div class="cs">${esc(r.label)}</div><div style="margin-top:14px">${acHTML}</div></div></div>
@@ -2624,9 +2666,19 @@ function renderProfil(){
 function renderSettings(){
   const boleh = isSuper();
   const script = buildAppsScript();
-  if (!S.borang.pkg && allPkgs.length) S.borang.pkg = allPkgs[0].name;
-  const bpkg = S.borang.pkg;
-  const rota = pkgAssign[bpkg] || [];
+  const formsHtml = allForms.length ? allForms.slice().sort((a,b) => (b.createdAt||'').localeCompare(a.createdAt||'')).map(f => {
+    const rota = f.agents || [];
+    const active = f.active !== false;
+    return `<div class="bf-row${active ? '' : ' off'}">
+      <div style="flex:1;min-width:220px">
+        <div class="bf-name">${esc(f.name)}</div>
+        <div class="bf-meta">${f.pkg ? esc(f.pkg) + ' · ' : ''}${rota.length ? 'Bergilir: ' + esc(rota.map(titleCaseName).join(' → ')) : 'Belum ada agent dipilih'}</div>
+      </div>
+      <div class="tgl${active ? ' on' : ''}" title="${active ? 'Aktif' : 'Tidak aktif'}" onclick="${boleh ? `toggleFormActive('${f._id}',${active})` : ''}"><span></span></div>
+      ${boleh ? `<button class="ic44 ic-gy" title="Salin kod" onclick="salinKodForm('${f._id}')">${I.doc.replace('#fff','#4a5568')}</button>
+      <button class="ic44 ic-gy" title="Kemaskini" onclick="editForm('${f._id}')">${I.pencil('#4a5568')}</button>` : ''}
+    </div>`;
+  }).join('') : '<div class="st-s">Belum ada borang lagi. Cipta borang pertama anda dengan butang di atas.</div>';
   $('pg-settings').innerHTML = `
   <div>
     <div class="st-grid">
@@ -2661,30 +2713,16 @@ function renderSettings(){
         </div>
       </div>
       <div class="card pad" style="grid-column:span 2">
-        <div style="display:flex;align-items:center;gap:13px">
-          <div class="st-ic" style="background:#e7f6ec">${I.share}</div>
-          <div><div class="st-t">Borang Lead</div><div class="st-s">Borang awam ikut pakej — pasang pada mana-mana landing page, lead auto-agih bergilir ke agent</div></div>
-        </div>
-        <div class="bg-grid" style="margin-top:20px">
-          <div>
-            <div class="in-lb">Pakej</div>
-            <select class="in-box" id="bg-pkg" onchange="pilihBorangPakej(this.value)">
-              ${allPkgs.map(p => `<option value="${esc(p.name)}"${p.name === bpkg ? ' selected' : ''}>${esc(p.name)}</option>`).join('') || '<option>Tiada pakej</option>'}
-            </select>
-            <div class="in-lb" style="margin-top:16px">Agent bergilir untuk pakej ini${boleh ? '' : ' · hanya Super Admin boleh ubah'}</div>
-            <div style="display:flex;flex-wrap:wrap;gap:8px">
-              ${ALL_AGENTS.map(n => `<div class="as-chip${rota.includes(n) ? ' on' : ''}" onclick="toggleBorangAgent('${esc(n)}')"><span class="sq" style="background:${avOf(n)}"></span>${esc(titleCaseName(n))}</div>`).join('') || '<div class="st-s">Tiada agent aktif.</div>'}
-            </div>
-            <div class="st-s" style="margin-top:9px">${rota.length ? 'Bergilir ikut susunan: ' + esc(rota.map(titleCaseName).join(' → ')) : 'Belum ada agent dipilih — lead dari borang pakej ini tidak akan diagihkan.'}</div>
-            <div class="in-lb" style="margin-top:18px">URL Apps Script (selepas anda deploy skrip di bawah)</div>
-            <input class="in-box" id="bg-endpoint" style="font-size:14px;font-weight:600" value="${esc(formCfg.endpoint || '')}" placeholder="https://script.google.com/macros/s/xxxx/exec" ${boleh ? 'onchange="simpanBorangEndpoint()"' : 'disabled'}>
+        <div style="display:flex;align-items:center;gap:13px;justify-content:space-between;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:13px">
+            <div class="st-ic" style="background:#e7f6ec">${I.share}</div>
+            <div><div class="st-t">Borang Lead</div><div class="st-s">Cipta seberapa banyak borang — setiap satu ada kod embed &amp; giliran agent sendiri</div></div>
           </div>
-          <div>
-            <div class="in-lb">Pratonton borang</div>
-            <div id="bg-preview" class="bg-preview-box"></div>
-            <button class="btn-o" style="margin-top:14px;width:100%;justify-content:center" onclick="salinKodBorang()">${I.doc.replace('#fff','#4a5568')}Salin Kod Borang</button>
-          </div>
+          ${boleh ? `<button class="btn-b" onclick="openAddForm()">${I.plusW}Borang Baharu</button>` : ''}
         </div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px">${formsHtml}</div>
+        <div class="in-lb" style="margin-top:22px">URL Apps Script (satu sistem untuk semua borang — selepas anda deploy skrip di bawah)</div>
+        <input class="in-box" id="bg-endpoint" style="font-size:14px;font-weight:600" value="${esc(formCfg.endpoint || '')}" placeholder="https://script.google.com/macros/s/xxxx/exec" ${boleh ? 'onchange="simpanBorangEndpoint()"' : 'disabled'}>
       </div>
       <div class="card pad">
         <div style="display:flex;align-items:center;gap:13px">
@@ -2699,22 +2737,104 @@ function renderSettings(){
       ? 'Mod demo — data disimpan dalam pelayar sahaja · <span onclick="resetDemo()">Set semula data demo</span>'
       : 'Data disimpan selamat dalam Firebase (' + esc(FB_PROJECT) + ') · perubahan disegerak serta-merta untuk semua agent'}</div>
   </div>`;
-  renderBorangPreview();
 }
-function renderBorangPreview(){
-  const box = $('bg-preview');
+function fillFormPkgOptions(sel){
+  sel.innerHTML = '<option value="">— Tiada pakej khusus —</option>' + allPkgs.map(p => `<option value="${esc(p.name)}">${esc(p.name)}</option>`).join('');
+}
+function renderMfAgents(){
+  const box = $('mf-agents'); if (!box) return;
+  box.innerHTML = ALL_AGENTS.map(n => `<div class="as-chip${mfAgents.includes(n) ? ' on' : ''}" onclick="toggleMfAgent('${esc(n)}')"><span class="sq" style="background:${avOf(n)}"></span>${esc(titleCaseName(n))}</div>`).join('') || '<div class="st-s">Tiada agent aktif.</div>';
+}
+function toggleMfAgent(n){
+  const i = mfAgents.indexOf(n);
+  if (i === -1) mfAgents.push(n); else mfAgents.splice(i, 1);
+  renderMfAgents();
+}
+function toggleMfActive(){
+  mfActive = !mfActive;
+  $('mf-active-tgl').className = 'tgl' + (mfActive ? ' on' : '');
+}
+function renderMfPreview(){
+  const box = $('mf-preview');
   if (!box || !window.JTForm) return;
-  JTForm.render(box, { package:S.borang.pkg, campaign:'pratonton', preview:true });
+  JTForm.render(box, { campaign:'pratonton', preview:true });
 }
-function pilihBorangPakej(v){ S.borang.pkg = v; render(); }
-async function toggleBorangAgent(n){
+function openAddForm(){
+  if (!isSuper()){ toast('Hanya Super Admin boleh cipta borang.', true); return; }
+  $('mf-title').textContent = 'Borang Baharu';
+  $('mf-id').value = ''; $('mf-name').value = ''; $('mf-campaign').value = '';
+  fillFormPkgOptions($('mf-pkg')); $('mf-pkg').value = '';
+  mfAgents = []; mfActive = true;
+  renderMfAgents(); $('mf-active-tgl').className = 'tgl on';
+  $('mf-del').style.display = 'none';
+  $('mf-embed-wrap').style.display = 'none';
+  om('m-form');
+  renderMfPreview();
+}
+function editForm(id){
+  const f = allForms.filter(x => x._id === id)[0]; if (!f) return;
+  $('mf-title').textContent = 'Kemaskini Borang';
+  $('mf-id').value = id; $('mf-name').value = f.name || ''; $('mf-campaign').value = f.campaign || '';
+  fillFormPkgOptions($('mf-pkg')); $('mf-pkg').value = f.pkg || '';
+  mfAgents = (f.agents || []).slice(); mfActive = f.active !== false;
+  renderMfAgents(); $('mf-active-tgl').className = 'tgl' + (mfActive ? ' on' : '');
+  $('mf-del').style.display = isSuper() ? 'block' : 'none';
+  $('mf-embed-wrap').style.display = 'block';
+  $('mf-embed').textContent = buildFormEmbed(f);
+  om('m-form');
+  renderMfPreview();
+}
+async function saveForm(){
+  if (!isSuper()){ toast('Hanya Super Admin boleh ubah borang.', true); return; }
+  const name = $('mf-name').value.trim();
+  if (!name){ toast('Nama borang wajib.', true); return; }
+  const id = $('mf-id').value || null;
+  const data = { name:name, pkg:$('mf-pkg').value || '', campaign:$('mf-campaign').value.trim() || '', agents:mfAgents.slice(), active:mfActive };
+  if (!id){ data.rr = 0; data.createdAt = new Date().toISOString(); }
+  try {
+    const newId = await API.saveForm(id, data);
+    toast(id ? 'Borang dikemaskini.' : 'Borang dicipta.');
+    $('mf-id').value = newId;
+    $('mf-title').textContent = 'Kemaskini Borang';
+    $('mf-del').style.display = isSuper() ? 'block' : 'none';
+    $('mf-embed-wrap').style.display = 'block';
+    $('mf-embed').textContent = buildFormEmbed(Object.assign({ _id:newId }, data));
+  } catch(e){ toast('Ralat: ' + e.message, true); }
+}
+function deleteFormAskModal(){
+  const id = $('mf-id').value; if (!id) return;
+  deleteFormAsk(id);
+}
+function deleteFormAsk(id){
+  if (!isSuper()){ toast('Hanya Super Admin boleh padam borang.', true); return; }
+  const f = allForms.filter(x => x._id === id)[0];
+  cm('m-form');
+  $('mc-title').textContent = 'Padam Borang';
+  $('mc-body').innerHTML = `Borang <b>${esc(f ? f.name : '')}</b> akan dipadam kekal. Kod embed sedia ada akan berhenti berfungsi.`;
+  $('mc-ok').textContent = 'Padam borang';
+  $('mc-ok').classList.add('btn-danger');
+  $('mc-ok').onclick = async function(){ cm('m-confirm'); try { await API.deleteForm(id); toast('Borang dipadam.'); } catch(e){ toast('Ralat: ' + e.message, true); } };
+  om('m-confirm');
+}
+async function toggleFormActive(id, cur){
   if (!isSuper()){ toast('Hanya Super Admin boleh ubah settings.', true); return; }
-  const pkg = S.borang.pkg; if (!pkg) return;
-  const list = (pkgAssign[pkg] || []).slice();
-  const i = list.indexOf(n);
-  if (i === -1) list.push(n); else list.splice(i, 1);
-  pkgAssign[pkg] = list;
-  try { await API.savePkgAssign(); } catch(e){ toast('Ralat: ' + e.message, true); }
+  try { await API.saveForm(id, { active:!cur }); } catch(e){ toast('Ralat: ' + e.message, true); }
+}
+function buildFormEmbed(f){
+  const ep = esc(formCfg.endpoint || 'https://script.google.com/macros/s/xxxx/exec');
+  const camp = esc(f.campaign || 'NAMA_KEMPEN_ANDA');
+  const pkg = f.pkg ? ' data-package="' + esc(f.pkg) + '"' : '';
+  return '<div data-jt-form data-form="' + esc(f._id) + '"' + pkg + ' data-campaign="' + camp + '" data-endpoint="' + ep + '"></div>\n' +
+    '<script src="https://' + location.host + '/embed.js"><\/script>';
+}
+function salinTeks(t){
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(() => toast('Kod borang disalin.')).catch(() => toast('Gagal menyalin.', true));
+  else toast('Gagal menyalin.', true);
+}
+function salinKodModal(){ salinTeks($('mf-embed').textContent); }
+function salinKodForm(id){
+  const f = allForms.filter(x => x._id === id)[0]; if (!f) return;
+  salinTeks(buildFormEmbed(f));
 }
 async function simpanBorangEndpoint(){
   if (!isSuper()){ toast('Hanya Super Admin boleh ubah settings.', true); return; }
@@ -2722,52 +2842,72 @@ async function simpanBorangEndpoint(){
   try { await API.saveFormConfig(); toast('URL borang disimpan.'); }
   catch(e){ toast('Ralat: ' + e.message, true); }
 }
-function buildBorangEmbed(){
-  const pkg = esc(S.borang.pkg || '');
-  const ep = esc(formCfg.endpoint || 'https://script.google.com/macros/s/xxxx/exec');
-  return '<div data-jt-form data-package="' + pkg + '" data-campaign="NAMA_KEMPEN_ANDA" data-endpoint="' + ep + '"></div>\n' +
-    '<script src="https://' + location.host + '/embed.js"><\/script>';
-}
-function salinKodBorang(){
-  const t = buildBorangEmbed();
-  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(() => toast('Kod borang disalin.')).catch(() => toast('Gagal menyalin.', true));
-  else toast('Gagal menyalin.', true);
-}
 function buildAppsScript(){
-  const assignLines = Object.keys(pkgAssign).map(k => '    "' + k + '": [' + (pkgAssign[k]||[]).map(a => '"' + a + '"').join(', ') + ']').join(',\n');
   return [
 '// ==== Juara Travel — Lead Capture + Rotator (Apps Script) ====',
+'// Skrip ini kekal SAMA tidak kira berapa banyak Borang Lead anda cipta —',
+'// tambah / kemaskini borang terus dari CRM > Settings > Borang Lead, tanpa perlu deploy semula.',
 '// 1) Buka script.google.com > Projek baharu > tampal semua kod ini.',
 '// 2) Project Settings > Show "appsscript.json" > tambah scope di bawah:',
 '//    "oauthScopes": ["https://www.googleapis.com/auth/datastore",',
 '//      "https://www.googleapis.com/auth/script.external_request"]',
 '// 3) Deploy > New deployment > Web app > Who has access: Anyone.',
-'// 4) Salin URL deployment tu, tampal dalam CRM > Settings > Borang Lead.',
+'// 4) Salin URL deployment tu, tampal dalam CRM > Settings > Borang Lead > URL Apps Script.',
 'var PROJECT_ID = "' + FB_PROJECT + '";',
-'var ASSIGN = {',
-(assignLines || '  // (belum ada agent ditetapkan — buat di CRM > Settings > Borang Lead)'),
-'};',
 '',
 'function doPost(e){',
 '  var d = JSON.parse(e.postData.contents);',
-'  var pakej = d.pakej || "";',
-'  var lead = { name:d.name||"", phone:d.phone||"", negeri:d.negeri||"", pakej:pakej,',
-'    pax:parseInt(d.pax)||1, tarikh:d.tarikh||"", campaign:d.campaign||"", agent:pilihAgent_(pakej),',
+'  var formId = d.formId || "";',
+'  var picked = formId ? pilihAgentBorang_(formId) : pilihAgentLegasi_(d.pakej || "");',
+'  var lead = { name:d.name||"", phone:d.phone||"", negeri:d.negeri||"", pakej:picked.pakej||d.pakej||"",',
+'    pax:parseInt(d.pax)||1, tarikh:d.tarikh||"", campaign:d.campaign||"", agent:picked.agent, formId:formId,',
 '    status:"New", value:0, createdAt:new Date().toISOString(),',
 '    updatedAt:new Date().toISOString(), date:new Date().toISOString().split("T")[0] };',
 '  tulisLead_(lead);',
 '  return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);',
 '}',
 '',
-'// Round robin ringkas — simpan giliran terakhir setiap pakej dalam Script Properties.',
-'function pilihAgent_(pakej){',
-'  var list = ASSIGN[pakej] || [];',
-'  if (!list.length) return "";',
+'// Borang (dinamik) — baca senarai ejen & giliran terus dari juara_forms/{formId}, tiada perlu redeploy.',
+'function pilihAgentBorang_(formId){',
+'  var doc = fsGet_("juara_forms/" + formId);',
+'  if (!doc || !doc.fields) return { agent:"", pakej:"" };',
+'  var av = (doc.fields.agents && doc.fields.agents.arrayValue.values) || [];',
+'  var agents = av.map(function(v){ return v.stringValue; });',
+'  var pakej = doc.fields.pkg ? doc.fields.pkg.stringValue : "";',
+'  if (!agents.length) return { agent:"", pakej:pakej };',
+'  var rr = doc.fields.rr ? parseInt(doc.fields.rr.integerValue || "0", 10) : 0;',
+'  var agent = agents[rr % agents.length];',
+'  fsPatch_("juara_forms/" + formId, { rr:{ integerValue:String(rr + 1) } }, ["rr"]);',
+'  return { agent:agent, pakej:pakej };',
+'}',
+'',
+'// Borang lama (kod embed tanpa data-form) — guna senarai lama di juara_config/assignments.',
+'function pilihAgentLegasi_(pakej){',
+'  var doc = fsGet_("juara_config/assignments");',
+'  var av = (doc && doc.fields && doc.fields[pakej] && doc.fields[pakej].arrayValue.values) || [];',
+'  var list = av.map(function(v){ return v.stringValue; });',
+'  if (!list.length) return { agent:"", pakej:pakej };',
 '  var prop = PropertiesService.getScriptProperties();',
 '  var key = "rr_" + pakej;',
 '  var idx = parseInt(prop.getProperty(key) || "0", 10);',
 '  prop.setProperty(key, String(idx + 1));',
-'  return list[idx % list.length];',
+'  return { agent:list[idx % list.length], pakej:pakej };',
+'}',
+'',
+'function fsGet_(path){',
+'  var token = ScriptApp.getOAuthToken();',
+'  var url = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID + "/databases/(default)/documents/" + path;',
+'  var res = UrlFetchApp.fetch(url, { method:"get", headers:{ Authorization:"Bearer " + token }, muteHttpExceptions:true });',
+'  if (res.getResponseCode() !== 200) return null;',
+'  return JSON.parse(res.getContentText());',
+'}',
+'',
+'function fsPatch_(path, fields, mask){',
+'  var token = ScriptApp.getOAuthToken();',
+'  var qs = mask.map(function(m){ return "updateMask.fieldPaths=" + m; }).join("&");',
+'  var url = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID + "/databases/(default)/documents/" + path + "?" + qs;',
+'  UrlFetchApp.fetch(url, { method:"patch", contentType:"application/json",',
+'    headers:{ Authorization:"Bearer " + token }, payload:JSON.stringify({ fields:fields }) });',
 '}',
 '',
 'function tulisLead_(lead){',
@@ -2777,7 +2917,7 @@ function buildAppsScript(){
 '  var fields = {',
 '    name:{stringValue:lead.name}, phone:{stringValue:lead.phone}, negeri:{stringValue:lead.negeri},',
 '    pakej:{stringValue:lead.pakej}, tarikh:{stringValue:lead.tarikh}, campaign:{stringValue:lead.campaign},',
-'    agent:{stringValue:lead.agent}, status:{stringValue:lead.status},',
+'    agent:{stringValue:lead.agent}, formId:{stringValue:lead.formId}, status:{stringValue:lead.status},',
 '    pax:{integerValue:String(lead.pax)}, value:{integerValue:String(lead.value)},',
 '    createdAt:{stringValue:lead.createdAt}, updatedAt:{stringValue:lead.updatedAt}, date:{stringValue:lead.date}',
 '  };',
@@ -2945,6 +3085,7 @@ function subscribe(){
   unsubs.push(f.onSnapshot(f.collection(FB.db, 'juara_campaigns'), s => { allCamps = s.docs.map(d => Object.assign({}, d.data(), { _id:d.id })); render(); }));
   unsubs.push(f.onSnapshot(f.collection(FB.db, 'juara_campaign_history'), s => { allCampHistory = s.docs.map(d => Object.assign({}, d.data(), { _id:d.id })); render(); }));
   unsubs.push(f.onSnapshot(f.collection(FB.db, 'juara_packages'), s => { allPkgs = s.docs.map(d => Object.assign({}, d.data(), { _id:d.id })); render(); }));
+  unsubs.push(f.onSnapshot(f.collection(FB.db, 'juara_forms'), s => { allForms = s.docs.map(d => Object.assign({}, d.data(), { _id:d.id })); render(); }));
   unsubs.push(f.onSnapshot(f.collection(FB.db, 'juara_agents'), s => { allAgents = s.docs.map(d => Object.assign({}, d.data(), { _id:d.id })); rebuildAgentList(); render(); }));
   unsubs.push(f.onSnapshot(f.collection(FB.db, 'juara_users'), s => { allUsers = s.docs.map(d => Object.assign({}, d.data(), { _id:d.id })); allUsers.sort((a,b) => (a.name||'').localeCompare(b.name||'')); if(CU){ const me=allUsers.find(u=>(u.email||'').toLowerCase()===(CU.email||'').toLowerCase()); if(me){ CU.name=me.name||CU.name; CU.role=me.role||CU.role; CU.cawangan=me.cawangan||''; CU.photoURL=me.photoURL||CU.googlePhotoURL||''; } } rebuildAgentList(); syncUser(); render(); }));
   unsubs.push(f.onSnapshot(f.doc(FB.db, 'juara_config', 'targets'), snap => { if (snap.exists()) TARGET = Object.assign({ pax:101, leads:2040, sales:500000, spend:11700 }, snap.data()); render(); }));
@@ -2985,6 +3126,19 @@ const API = {
   async deletePkg(id){
     if (MODE === 'demo'){ allPkgs = allPkgs.filter(x => x._id !== id); demoSave(); render(); return; }
     await FB.fs.deleteDoc(FB.fs.doc(FB.db, 'juara_packages', id));
+  },
+  async saveForm(id, data){
+    if (MODE === 'demo'){
+      if (id){ const f = allForms.filter(x => x._id === id)[0]; if (f) Object.assign(f, data); demoSave(); render(); return id; }
+      data._id = 'F' + Date.now(); allForms.push(data); demoSave(); render(); return data._id;
+    }
+    if (id){ await FB.fs.updateDoc(FB.fs.doc(FB.db, 'juara_forms', id), data); return id; }
+    const ref = await FB.fs.addDoc(FB.fs.collection(FB.db, 'juara_forms'), data);
+    return ref.id;
+  },
+  async deleteForm(id){
+    if (MODE === 'demo'){ allForms = allForms.filter(x => x._id !== id); demoSave(); render(); return; }
+    await FB.fs.deleteDoc(FB.fs.doc(FB.db, 'juara_forms', id));
   },
   async saveCampaign(id, data){
     if (MODE === 'demo'){
@@ -3054,7 +3208,7 @@ const API = {
 };
 function demoSave(){
   try {
-    localStorage.setItem(DEMO_KEY, JSON.stringify({ allLeads:allLeads, trashedLeads:trashedLeads, allCamps:allCamps, allPkgs:allPkgs, allUsers:allUsers, TARGET:TARGET, stateAssign:stateAssign, pkgAssign:pkgAssign, formCfg:formCfg }));
+    localStorage.setItem(DEMO_KEY, JSON.stringify({ allLeads:allLeads, trashedLeads:trashedLeads, allCamps:allCamps, allPkgs:allPkgs, allUsers:allUsers, allForms:allForms, TARGET:TARGET, stateAssign:stateAssign, pkgAssign:pkgAssign, formCfg:formCfg }));
   } catch(e){}
 }
 
@@ -3123,6 +3277,10 @@ function demoSeed(){
     allLeads.push(l);
   }
   trashedLeads = [{ _id:'LT1', name:'Roslan Karim', phone:'011-559 3322', negeri:'Perlis', pakej:'Pakej RM4990', pax:2, status:'New', agent:'Nadrah', deleted:true, deletedAt:iso(6), deletedBy:'demo@juaratravel.my', deletedReason:'Lead pendua', createdAt:iso(30), date:dstr(30), activityLog:[] }];
+  allForms = [
+    { _id:'F1', name:'Pakej RM4990 — FB Ads', pkg:'Pakej RM4990', campaign:'FB Ads Ogos', agents:['Izzati','Nadrah'], rr:0, active:true, createdAt:iso(40) },
+    { _id:'F2', name:'Eko Klasik — Landing Page', pkg:'Eko Klasik', campaign:'', agents:['Natasya','Naim'], rr:0, active:true, createdAt:iso(20) }
+  ];
   function pkgPriceSeed(n, pkgs){ const p = pkgs.filter(x => x.name === n)[0]; return p ? p.price : 5000; }
 }
 function mulaDemo(){
@@ -3130,7 +3288,7 @@ function mulaDemo(){
   let ok = false;
   try {
     const raw = localStorage.getItem(DEMO_KEY);
-    if (raw){ const d = JSON.parse(raw); if (d && d.allLeads && d.allLeads.length){ allLeads = d.allLeads; trashedLeads = d.trashedLeads || []; allCamps = d.allCamps || []; allPkgs = d.allPkgs || []; allUsers = d.allUsers || []; TARGET = d.TARGET || TARGET; stateAssign = d.stateAssign || {}; pkgAssign = d.pkgAssign || {}; formCfg = d.formCfg || {}; ok = true; } }
+    if (raw){ const d = JSON.parse(raw); if (d && d.allLeads && d.allLeads.length){ allLeads = d.allLeads; trashedLeads = d.trashedLeads || []; allCamps = d.allCamps || []; allPkgs = d.allPkgs || []; allUsers = d.allUsers || []; allForms = d.allForms || []; TARGET = d.TARGET || TARGET; stateAssign = d.stateAssign || {}; pkgAssign = d.pkgAssign || {}; formCfg = d.formCfg || {}; ok = true; } }
   } catch(e){}
   if (!ok) demoSeed();
   rebuildAgentList();
