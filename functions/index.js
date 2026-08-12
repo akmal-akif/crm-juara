@@ -34,6 +34,11 @@ function addDaysStr(ymdStr, n) {
 function docIdFor(campaignName, date) {
   return `${campaignName}__${date}`.toLowerCase().replace(/[^a-z0-9_]+/g, "-").slice(0, 300);
 }
+// Mirrors public/domain/campaigns.mjs normCampaignName() — kept in sync manually
+// since Cloud Functions (CommonJS) can't import that browser ESM module directly.
+function normCampaignName(n) {
+  return String(n || "").trim().toLowerCase().replace(/[–—−]/g, "-").replace(/\s+/g, " ");
+}
 
 async function metaGet(url) {
   const res = await fetch(url);
@@ -57,6 +62,55 @@ async function fetchDailySpend(token, since, until) {
   return rows;
 }
 
+async function fetchCampaigns(token) {
+  let url =
+    `https://graph.facebook.com/${API_VERSION}/${AD_ACCOUNT_ID}/campaigns` +
+    `?fields=name,daily_budget,lifetime_budget,start_time,stop_time` +
+    `&limit=200&access_token=${token}`;
+  const rows = [];
+  while (url) {
+    const json = await metaGet(url);
+    rows.push(...(json.data || []));
+    url = json.paging && json.paging.next ? json.paging.next : null;
+  }
+  return rows;
+}
+
+// Creates a juara_campaigns doc for any Meta campaign not already registered in
+// the CRM, so new campaigns show up on the Kempen Iklan page without manual
+// data entry. Never touches existing docs — budget/pakejLink/dates already set
+// by staff are left alone.
+async function syncNewCampaigns(token) {
+  const [metaCampaigns, existingSnap] = await Promise.all([
+    fetchCampaigns(token),
+    db.collection("juara_campaigns").get(),
+  ]);
+  const existingNames = new Set(existingSnap.docs.map((d) => normCampaignName(d.data().name)));
+
+  const batch = db.batch();
+  let added = 0;
+  for (const c of metaCampaigns) {
+    const name = (c.name || "").trim();
+    if (!name || existingNames.has(normCampaignName(name))) continue;
+    const budgetSen = parseFloat(c.daily_budget || c.lifetime_budget || 0) || 0;
+    batch.set(db.collection("juara_campaigns").doc(), {
+      name,
+      platform: "Meta Ads",
+      budget: budgetSen / 100,
+      spend: 0,
+      dateStart: c.start_time ? c.start_time.slice(0, 10) : "",
+      dateEnd: c.stop_time ? c.stop_time.slice(0, 10) : "",
+      pakejLink: "",
+      source: "meta-auto",
+      createdAt: new Date().toISOString(),
+    });
+    existingNames.add(normCampaignName(name));
+    added++;
+  }
+  if (added) await batch.commit();
+  return added;
+}
+
 exports.backfillMetaSpend = onSchedule(
   {
     schedule: "0 6 * * *",
@@ -69,7 +123,8 @@ exports.backfillMetaSpend = onSchedule(
     const since = addDaysStr(until, -(DAYS - 1));
     logger.info(`Tarik spend harian ${since} hingga ${until} dari ${AD_ACCOUNT_ID}`);
 
-    const rows = await fetchDailySpend(META_ACCESS_TOKEN.value(), since, until);
+    const token = META_ACCESS_TOKEN.value();
+    const rows = await fetchDailySpend(token, since, until);
     logger.info(`${rows.length} baris (kempen x hari) diterima daripada Meta`);
 
     const batch = db.batch();
@@ -86,5 +141,8 @@ exports.backfillMetaSpend = onSchedule(
     }
     await batch.commit();
     logger.info(`Selesai. ${rows.length} rekod ditulis ke juara_campaign_history.`);
+
+    const added = await syncNewCampaigns(token);
+    logger.info(`${added} kempen baharu ditambah ke juara_campaigns.`);
   }
 );

@@ -132,6 +132,8 @@ async function run() {
   }
 
   console.log(`\nSelesai. ${written} rekod ${DRY_RUN ? "akan ditulis" : "ditulis"} ke juara_campaign_history.`);
+  console.log("(Auto-tambah kempen baharu ke juara_campaigns hanya berlaku via Cloud Function backfillMetaSpend — skrip manual ni tiada akses baca juara_campaigns akibat Firestore rules.)");
+
   if (DRY_RUN) console.log("Ini PREVIEW sahaja. Tukar DRY_RUN=false dalam fail ni untuk simpan betul-betul.");
   console.log("Buka CRM dan tekan Ctrl+Shift+R.");
   process.exit(0);

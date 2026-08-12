@@ -578,6 +578,14 @@ textarea.f-in{min-height:110px;resize:vertical;line-height:1.5}
 .ck-mini{height:9px;border-radius:6px;background:#eef1f8;overflow:hidden;min-width:120px;margin-top:7px}
 .ck-mini>div{height:100%;border-radius:6px;background:#16a34a}
 
+/* ── Tab (halaman Agent) ── */
+.ag-tabs{display:flex;gap:24px;border-bottom:1.5px solid #e4e9f4;margin:4px 0 18px}
+.ag-tab{padding:12px 2px;font-size:15px;font-weight:700;color:#8a95ab;cursor:pointer;border-bottom:2.5px solid transparent;user-select:none;display:flex;align-items:center;gap:9px;transition:.15s ease}
+.ag-tab:hover{color:#3c4a66}
+.ag-tab.on{color:#2563eb;border-bottom-color:#2563eb}
+.ag-tab-count{font-size:12.5px;font-weight:700;background:#f2f5fb;color:#8a95ab;padding:2px 9px;border-radius:10px}
+.ag-tab.on .ag-tab-count{background:#e8f0ff;color:#1d4ed8}
+
 /* ── Agihan negeri (halaman Agent) ── */
 .ng-card{background:#fff;border:1px solid #e4e9f4;border-radius:16px;overflow:visible;display:flex;align-items:center;gap:13px;padding:16px 20px}
 .ng-sum{font-size:13.5px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap}
@@ -989,6 +997,7 @@ button,input,select,textarea{font-size:inherit}
   .pipe{gap:10px!important;padding-bottom:8px}.col{min-width:270px!important;width:270px!important}.col-tt{font-size:12px!important}.pc-name{font-size:11.5px!important}.pc-val2{font-size:11px!important}
   .pk-name{font-size:15px!important}.pk-desc{font-size:11px!important}.pk-price{font-size:19px!important}
   .ng-card{padding:12px!important}.ng-dd-menu{width:260px!important;right:-12px!important}.ng-dd-item{font-size:13px!important;padding:7px 12px!important}
+  .ag-tabs{gap:16px!important}.ag-tab{font-size:13.5px!important}
   .ck-row{padding:10px 11px!important;gap:9px!important}.ck-lb{font-size:11.5px!important}
 
   /* Forms and modal as a clean mobile sheet */
@@ -1583,7 +1592,7 @@ const S = {
   aftersales:{ filter:'semua' },
   kempen:{ filter:'semua' },
   laporan:{ month:'', menu:false },
-  agent:{ filter:'semua', sortBranch:false, ngOpen:{} },
+  agent:{ filter:'semua', sortBranch:false, ngOpen:{}, tab:'list' },
   pakej:{ filter:'semua' },
   recycle:{},
   profil:{ edit:false },
@@ -2502,6 +2511,27 @@ function renderAgent(){
     </div>`;
   }).join('');
 
+  const tab = isSuper() ? S.agent.tab : 'list';
+  const tabs = !isSuper() ? '' : `<div class="ag-tabs">
+    <div class="ag-tab${tab === 'list' ? ' on' : ''}" onclick="setAgentTab('list')">Senarai Agent<span class="ag-tab-count">${allUsers.length}</span></div>
+    <div class="ag-tab${tab === 'negeri' ? ' on' : ''}" onclick="setAgentTab('negeri')">Agihan Negeri<span class="ag-tab-count">${ALL_AGENTS.length}</span></div>
+  </div>`;
+
+  const listView = `<div class="card">
+      <div class="as-fhd">
+        <div style="flex:1;min-width:200px"><div class="ct">Senarai Agent</div><div class="cs">${list.length} daripada ${allUsers.length} akaun dipaparkan</div></div>${chips}
+      </div>
+      ${list.length ? `<div class="tblwrap"><table class="tbl">
+        <thead><tr><th>Agent</th><th>Peranan</th><th>Cawangan</th><th class="r">Lead Dipegang</th><th>Akses</th><th>Aktif Terakhir</th><th class="r">Tindakan</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>`
+      : '<div class="empty"><div class="empty-t">Tiada agent ditemui</div><div class="empty-s">Cuba tukar filter akses atau kosongkan carian</div></div>'}
+    </div>`;
+
+  const negeriView = `<div class="card"><div class="as-fhd" style="border-bottom:none">
+      <div style="flex:1;min-width:200px"><div class="ct">Agihan Negeri</div><div class="cs">Lead baharu diagih automatik kepada agent yang menjaga negeri pelanggan · klik kad untuk tetapkan</div></div>
+    </div></div>
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:1560px">${ngCards}</div>`;
+
   $('pg-agent').innerHTML = `
   <div class="wrap18">
     <div class="ag-bar">
@@ -2512,20 +2542,8 @@ function renderAgent(){
       <div class="ag-stat"><span class="ag-sv">${tunggu}</span><span class="ag-sl">jemputan tertunggak</span></div>
       <div class="ag-stat"><span class="ag-sv">${CAWANGAN_COUNT}</span><span class="ag-sl">cawangan</span></div>
     </div>
-    <div class="card">
-      <div class="as-fhd">
-        <div style="flex:1;min-width:200px"><div class="ct">Senarai Agent</div><div class="cs">${list.length} daripada ${allUsers.length} akaun dipaparkan</div></div>${chips}
-      </div>
-      ${list.length ? `<div class="tblwrap"><table class="tbl">
-        <thead><tr><th>Agent</th><th>Peranan</th><th>Cawangan</th><th class="r">Lead Dipegang</th><th>Akses</th><th>Aktif Terakhir</th><th class="r">Tindakan</th></tr></thead>
-        <tbody>${rows}</tbody></table></div>`
-      : '<div class="empty"><div class="empty-t">Tiada agent ditemui</div><div class="empty-s">Cuba tukar filter akses atau kosongkan carian</div></div>'}
-    </div>
-    ${isSuper() ? `
-    <div class="card"><div class="as-fhd" style="border-bottom:none">
-      <div style="flex:1;min-width:200px"><div class="ct">Agihan Negeri</div><div class="cs">Lead baharu diagih automatik kepada agent yang menjaga negeri pelanggan · klik kad untuk tetapkan</div></div>
-    </div></div>
-    <div style="display:flex;flex-direction:column;gap:12px;max-width:1560px">${ngCards}</div>` : ''}
+    ${tabs}
+    ${tab === 'negeri' && isSuper() ? negeriView : listView}
   </div>`;
 }
 
@@ -3775,6 +3793,7 @@ function setTeamZon(z){ S.team.zon = (S.team.zon === z ? '' : z); render(); }
 function setAsFilter(f){ S.aftersales.filter = (S.aftersales.filter === f ? 'semua' : f); render(); }
 function setKempenFilter(f){ S.kempen.filter = f; render(); }
 function setAgentFilter(f){ S.agent.filter = f; render(); }
+function setAgentTab(t){ S.agent.tab = t; render(); }
 function setPakejFilter(f){ S.pakej.filter = f; render(); }
 function toggleSortBranch(){ S.agent.sortBranch = !S.agent.sortBranch; render(); toast(S.agent.sortBranch ? 'Disusun ikut cawangan' : 'Susunan asal'); }
 
